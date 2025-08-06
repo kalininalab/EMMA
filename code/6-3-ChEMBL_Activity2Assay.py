@@ -9,15 +9,19 @@ import warnings
 import os
 import math
 from os.path import join
+
 sys.path.append("./../utilities")
 from utilities.helper_functions import *
+
 CURRENT_DIR = os.getcwd()
 warnings.filterwarnings("ignore")
 from tenacity import retry, stop_after_attempt, wait_exponential, retry_if_exception_type
 from requests.exceptions import ConnectionError
+
 assay_client = new_client.assay
 
-chembl_binding_activities = pd.read_pickle(join(CURRENT_DIR, "..", "data", "processed_data", "chembl",  "6-2-chembl_binding_activities.pkl"))
+chembl_binding_activities = pd.read_pickle(
+    join(CURRENT_DIR, "..", "data", "processed_data", "chembl", "6-2-chembl_binding_activities.pkl"))
 print(data_report(chembl_binding_activities))
 chembl_binding_activities["relationship_type"] = None
 chembl_binding_activities["confidence_score"] = None
@@ -25,7 +29,7 @@ chembl_binding_activities["src_id"] = None
 
 
 def map_activity_to_assay(chembl):
-    data=chembl
+    data = chembl
     assay_data = {
         'relationship_type': {},
         'confidence_score': {},
@@ -41,6 +45,7 @@ def map_activity_to_assay(chembl):
     )
     def fetch_assay_data(target_id, assay_id):
         return assay_client.filter(target_chembl_id=target_id, assay_chembl_id=assay_id)
+
     for target_id, assay_id in tuples:
         try:
             assays = fetch_assay_data(target_id, assay_id)
@@ -56,20 +61,22 @@ def map_activity_to_assay(chembl):
                 print(f"Assay evidence was found for target:{(target_id, assay_id)}. Remaining target ids:{total_data}")
         except ConnectionError as e:
             print(f"Failed to fetch data for {target_id}, {assay_id} after retries: {e}")
-    data['relationship_type'] = data.set_index(['target_chembl_id', 'assay_chembl_id']).index.map(assay_data['relationship_type']).values
-    data['confidence_score'] = data.set_index(['target_chembl_id', 'assay_chembl_id']).index.map(assay_data['confidence_score']).values
+    data['relationship_type'] = data.set_index(['target_chembl_id', 'assay_chembl_id']).index.map(
+        assay_data['relationship_type']).values
+    data['confidence_score'] = data.set_index(['target_chembl_id', 'assay_chembl_id']).index.map(
+        assay_data['confidence_score']).values
     data['src_id'] = data.set_index(['target_chembl_id', 'assay_chembl_id']).index.map(assay_data['src_id']).values
     return data
 
 
 chembl_binding_activities.dropna(subset=["standard_value", "activity_comment"], how='all', inplace=True)
 chembl_binding_activities = map_activity_to_assay(chembl_binding_activities)
-#
+
 chembl_binding_activities = chembl_binding_activities[
     (chembl_binding_activities['relationship_type'] == 'D') &
     (chembl_binding_activities['confidence_score'] == 9)
-].reset_index(drop=True)
-#
-chembl_binding_activities.to_pickle(join(CURRENT_DIR, "..", "data", "processed_data", "chembl",  "6-3-chembl_binding_activities.pkl"))
-print(data_report(chembl_binding_activities))
+    ].reset_index(drop=True)
 
+chembl_binding_activities.to_pickle(
+    join(CURRENT_DIR, "..", "data", "processed_data", "chembl", "6-3-chembl_binding_activities.pkl"))
+print(data_report(chembl_binding_activities))

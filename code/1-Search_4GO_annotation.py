@@ -29,12 +29,13 @@ ECO_to_GAF = pd.read_csv(
     skiprows=29
 )
 
-# Evidence codes
+# Experimental Evidence
 exp_evidence = {"EXP", "IDA", "IPI", "IMP", "IGI", "IEP", "HTP", "HDA", "HMP", "HGI", "HEP"}
 
 # Multiprocessing lock
 lock = Lock()
 remaining_runs = Value('i', 0)
+
 
 def log_message(run, processed, total_runs):
     """
@@ -46,7 +47,7 @@ def log_message(run, processed, total_runs):
               f"Remaining runs: {total_runs - run - 1}")
 
 
-def search_GOA_database(run, total_runs, batch_size):
+def search_goa_database(run, total_runs, batch_size):
     """
     Processes annotations from the GOA database in chunks until EOF.
     """
@@ -99,26 +100,26 @@ def main():
     #     print(f"Total annotations: {total_annotations}")
 
     total_annotations = 1236682101
-    batch_size = 10**6
+    batch_size = 10 ** 6
     max_batches = math.ceil(total_annotations / batch_size)
     with Pool(processes=os.cpu_count()) as pool:
-        pool.starmap(search_GOA_database, [(run, max_batches, batch_size) for run in range(max_batches)])
+        pool.starmap(search_goa_database, [(run, max_batches, batch_size) for run in range(max_batches)])
 
     end_time = time.time()
     print(f"All runs completed! Total time taken: {end_time - start_time:.2f} seconds")
 
 
 if __name__ == "__main__":
-    # main()
+    main()
 
-    df_GO_UID = pd.read_pickle(join(CURRENT_DIR, "..", "data","raw_data", "GOA_data", "experimental",
+    df_GO_UID = pd.read_pickle(join(CURRENT_DIR, "..", "data", "raw_data", "GOA_data", "experimental",
                                     "experimental_df_GO_UID_part_" + str(0) + ".pkl"))
 
     for i in range(0, 1237):
         try:
-            df_new = pd.read_pickle(join(CURRENT_DIR, "..", "data","raw_data","GOA_data", "experimental",
+            df_new = pd.read_pickle(join(CURRENT_DIR, "..", "data", "raw_data", "GOA_data", "experimental",
                                          "experimental_df_GO_UID_part_" + str(i) + ".pkl"))
             df_GO_UID = pd.concat([df_GO_UID, df_new], ignore_index=True)
         except FileNotFoundError:
             print("Error", i)
-    df_GO_UID.to_pickle(join(CURRENT_DIR, "..", "data","raw_data", "GOA_data", "experimental_df_GO_UID.pkl"))
+    df_GO_UID.to_pickle(join(CURRENT_DIR, "..", "data", "raw_data", "GOA_data", "experimental_df_GO_UID.pkl"))

@@ -1,9 +1,5 @@
 import sys
 import warnings
-import pandas as pd
-import re
-import os
-from os.path import join
 
 warnings.filterwarnings("ignore")
 sys.path.append("/../utilities")
@@ -11,7 +7,6 @@ from utilities.helper_functions import *
 
 CURRENT_DIR = os.getcwd()
 print(CURRENT_DIR)
-
 
 # Characters to skip lines starting with
 skip_chars = ['SYNONYMS', 'SOURCE_TISSUE', 'LOCALIZATION', 'TURNOVER_NUMBER', 'PH_OPTIMUM', 'PH_RANGE',
@@ -170,60 +165,6 @@ brenda = brenda[brenda.apply(lambda row: all(len(row[col]) > 0 for col in column
 # print(data_report(brenda))
 brenda.reset_index(drop=True, inplace=True)
 
-
-def sub_enz_pair(df, ec_col, protein_col, substrate_col):
-    data = []
-    for _, row in df.iterrows():
-        ec = row[ec_col]
-        for prot in row[protein_col]:
-            prot_id = prot[1]
-            for sub in row[substrate_col]:
-                if sub[0] == prot[0]:  # Matching reference numbers
-                    km_info = None
-                    for km in row.get('km_values', []):
-                        if km[0] == prot[0] and km[1].lower() in sub[1].lower():
-                            km_info = km[2]  # Just the value
-                            break
-                    data.append({
-                        'EC_ID': ec,
-                        'Uni_SwissProt': prot_id,
-                        'Substrate': sub[1],
-                        'standard_value': km_info if km_info else None
-                    })
-    return pd.DataFrame(data)
-
-
-def inh_enz_pair(df, ec_col, protein_col, inhibitor_col):
-    data = []
-    for _, row in df.iterrows():
-        ec = row[ec_col]
-        for prot in row[protein_col]:
-            prot_id = prot[1]
-            for inh in row[inhibitor_col]:
-                if inh[0] == prot[0]:  # Matching reference numbers
-                    ic50_info = None
-                    ki_info = None
-
-                    for ic50 in row.get('ic50_values', []):
-                        if ic50[0] == prot[0] and ic50[1].lower() in inh[1].lower():
-                            ic50_info = ic50[2]  # Just the value
-                            break
-
-                    for ki in row.get('ki_values', []):
-                        if ki[0] == prot[0] and ki[1].lower() in inh[1].lower():
-                            ki_info = ki[2]  # Just the value
-                            break
-
-                    data.append({
-                        'EC_ID': ec,
-                        'Uni_SwissProt': prot_id,
-                        'Inhibitor': inh[1],
-                        'IC50_value': ic50_info if ic50_info else None,
-                        'Ki_value': ki_info if ki_info else None
-                    })
-    return pd.DataFrame(data)
-
-
 # metals, ions  to filter
 substrates_to_filter = ['H2O', 'H+', 'CO2', 'O2', 'Ca2', 'Mn2', 'Na+', 'Zn2+', 'K+', 'Mg2+', 'Mg+', 'Cd2+', 'Cu+',
                         'phosphate', 'Cu2+']
@@ -245,7 +186,6 @@ enz_inh = enz_inh[
     enz_inh['Inhibitor'].apply(lambda x: not any(sub in x for sub in substrates_to_filter))
 ].drop_duplicates()
 
-
 # Remove unwanted char in 'Substrate' and 'Inhibitors' columns
 enz_nsub = enz_nsub[~enz_nsub['Substrate'].str.match(r'^(\d|.)$')]
 enz_nsub['Substrate'] = enz_nsub['Substrate'].str.replace(r'[\n\t]', '', regex=True)
@@ -261,7 +201,6 @@ enz_sub['standard_value'] = enz_sub['standard_value'].replace('-999', None)
 enz_sub = enz_sub[enz_sub['standard_value'] != '-999']
 enz_inh['IC50_value'] = enz_inh['IC50_value'].replace('-999', None)
 enz_inh['Ki_value'] = enz_inh['Ki_value'].replace('-999', None)
-
 
 # Reset index and save to pickle
 brenda_enz_sub = pd.concat([enz_nsub, enz_sub])

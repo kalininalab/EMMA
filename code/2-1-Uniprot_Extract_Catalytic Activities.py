@@ -80,9 +80,9 @@ for ec_pattern in ec_number_patterns:
                                 if comment.get('commentType') == 'CATALYTIC ACTIVITY' and 'reaction' in comment:
                                     reaction = comment['reaction']
                                     if 'ecNumber' in reaction:
-                                        EC_ID=reaction['ecNumber']
+                                        EC_ID = reaction['ecNumber']
                                     else:
-                                        EC_ID=ec_number_str
+                                        EC_ID = ec_number_str
                                     reaction_name = reaction.get('name', '')
                                     right_side_list = []
                                     if '=' in reaction_name:
@@ -134,7 +134,7 @@ substrates_to_filter = ['H2O', 'H2O2', 'H+', '2 H2O', 'H(+)', 'CO2', '2 H(+)', '
                         'Zn2+', 'K+', 'Mg2+', 'Mg+', 'Cd2+', 'Cu+', 'phosphate', 'Cu2+']
 df = df[df['Substrate'].apply(lambda x: not any(sub in x for sub in substrates_to_filter))]
 
-experimental_df = pd.read_pickle(join(CURRENT_DIR, "..", "data", "raw_data","GOA_data", "experimental_df_GO_UID.pkl"))
+experimental_df = pd.read_pickle(join(CURRENT_DIR, "..", "data", "raw_data", "GOA_data", "experimental_df_GO_UID.pkl"))
 evidence_map = dict(zip(experimental_df['ECO_Evidence_code'], experimental_df['evidence']))
 
 
@@ -146,5 +146,5 @@ def map_evidence_codes(evidence_codes):
 df['Evidence'] = df['Evidence Codes'].apply(map_evidence_codes)
 df = df[df['Evidence'] != 'Not exp']
 df.reset_index(drop=True, inplace=True)
-df.to_pickle(join(CURRENT_DIR, "..", "data", "processed_data","uniprot", "2-1-uniprot_enz_sub.pkl"))
+df.to_pickle(join(CURRENT_DIR, "..", "data", "processed_data", "uniprot", "2-1-uniprot_enz_sub.pkl"))
 print(data_report(df))

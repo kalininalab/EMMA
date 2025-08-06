@@ -30,9 +30,9 @@ session.mount("http://", adapter)
 MAX_WORKERS = 3
 REQUEST_DELAY = 2
 CHUNK_SIZE = 500
-CHECKPOINT_FILE = join(CURRENT_DIR, "..", "data", "processed_data","PubChem","chunks","checkpoint.json")
-RESULTS_DIR = join(CURRENT_DIR, "..", "data", "processed_data","PubChem","chunks")
-main_DIR = join(CURRENT_DIR, "..", "data", "processed_data","PubChem")
+CHECKPOINT_FILE = join(CURRENT_DIR, "..", "data", "processed_data", "PubChem", "chunks", "checkpoint.json")
+RESULTS_DIR = join(CURRENT_DIR, "..", "data", "processed_data", "PubChem", "chunks")
+main_DIR = join(CURRENT_DIR, "..", "data", "processed_data", "PubChem")
 
 
 def create_directory(directory):
@@ -116,6 +116,8 @@ def get_existing_aids():
             existing_aids_without_ec = {line.strip() for line in f if line.strip()}
 
     return existing_aids_with_ec, existing_aids_without_ec
+
+
 ##########################################################################################################
 
 
@@ -222,7 +224,7 @@ def process_assay(aid):
 
 
 def main():
-    term_1=   """
+    term_1 = """
 (IC50[ResultType] OR binding[AssayType] OR "IC50"[Title] OR IC50 OR Ki OR Kd OR validated OR "dose response" OR "concentration response"
  AND
   (
@@ -236,8 +238,6 @@ def main():
   )
 """
 
-
-
     create_directory(RESULTS_DIR)
     if not any(f.startswith("assay_chunk_") for f in os.listdir(RESULTS_DIR)):
 
@@ -246,7 +246,7 @@ def main():
         # assay_list = [aid for aid in assay_ids if aid not in existing_aids_with_ec]
         # assay_list = [aid for aid in assay_list if aid not in existing_aids_without_ec]
         existing_aids_with_ec, _ = get_existing_aids()
-        assay_list=list(existing_aids_with_ec)
+        assay_list = list(existing_aids_with_ec)
         if not assay_list:
             print("No assays found or failed to fetch assay list.")
             return
@@ -291,6 +291,6 @@ def main():
             combined_df.to_csv(join(main_DIR, "8-1-pubchem_assays_combined.csv"), index=False)
             print(f"Combined results saved")
 
+
 if __name__ == "__main__":
     main()
-

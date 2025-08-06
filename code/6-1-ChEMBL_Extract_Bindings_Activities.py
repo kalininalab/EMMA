@@ -9,11 +9,12 @@ from os.path import join
 import warnings
 from tenacity import retry, stop_after_attempt, wait_exponential, retry_if_exception_type
 from requests.exceptions import ConnectionError, HTTPError
+
 warnings.filterwarnings("ignore")
 activity_client = new_client.activity
 batch_size = 20
 CURRENT_DIR = os.getcwd()
-# Initialize W&B
+
 
 # Retry decorator for fault tolerance
 @retry(
@@ -28,6 +29,7 @@ def fetch_batch(start, end):
          'activity_comment', 'data_validity_comment', 'standard_units']
     )[start:end]
     return pd.DataFrame(activities)
+
 
 # Main processing loop
 start_time = time.time()
@@ -54,16 +56,11 @@ with ThreadPoolExecutor(max_workers=5) as executor:
         except Exception as exc:
             print(f"Batch {batch_number} failed: {exc}. Remaining: {remaining_batches}")
 
-# Consolidate results
 filtered_activities_df = pd.concat(results, ignore_index=True)
 filtered_activities_df['standard_value'] = pd.to_numeric(filtered_activities_df['standard_value'], errors='coerce')
 filtered_activities_df.reset_index(drop=True, inplace=True)
 # Save data
-save_dir = join(CURRENT_DIR, "..", "data", "processed_data","chembl")
+save_dir = join(CURRENT_DIR, "..", "data", "processed_data", "chembl")
 filtered_activities_df.to_parquet(join(save_dir, "6-1-chembl_binding_activities.parquet"))
 filtered_activities_df.to_pickle(join(save_dir, "6-1-chembl_binding_activities.pkl"))
 print(f"Total execution time: {(time.time() - start_time) / 3600:.2f} hours")
-
-
-
-

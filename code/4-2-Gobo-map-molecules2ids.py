@@ -2,7 +2,7 @@ import sys
 import warnings
 
 warnings.filterwarnings("ignore")
-sys.path.append("/Users/vahidatabaigi/SIP2/Utilities")
+sys.path.append("./../utilities")
 import pandas as pd
 import os
 import pickle
@@ -13,7 +13,7 @@ from utilities.helper_functions import *
 CURRENT_DIR = os.getcwd()
 print(CURRENT_DIR)
 
-df_obo_uniprot=pd.read_pickle(join(CURRENT_DIR, "..", "data","processed_data","GO", "4-1-gobo_enz_sub.pkl"))
+df_obo_uniprot = pd.read_pickle(join(CURRENT_DIR, "..", "data", "processed_data", "GO", "4-1-gobo_enz_sub.pkl"))
 #######################################
 # Pubchem
 #######################################
@@ -22,7 +22,7 @@ df_obo_uniprot=pd.read_pickle(join(CURRENT_DIR, "..", "data","processed_data","G
 # cid_to_name_df = pd.DataFrame(list(pubID_dict.items()), columns=['Substrate', 'PubChem_ID'])
 # cid_to_name_df.to_pickle(join(CURRENT_DIR, "..", "data", "processed_data" ,"GO", "gobo_cid2name.pkl"))
 
-cid_to_name_df = pd.read_pickle(join(CURRENT_DIR, "..", "data", "processed_data","GO", "gobo_cid2name.pkl"))
+cid_to_name_df = pd.read_pickle(join(CURRENT_DIR, "..", "data", "processed_data", "GO", "gobo_cid2name.pkl"))
 cid_to_name_dict = dict(zip(cid_to_name_df['Substrate'], cid_to_name_df['PubChem_ID']))
 df_obo_uniprot['molecule_ID'] = df_obo_uniprot['Substrate'].map(cid_to_name_dict)
 print(data_report(df_obo_uniprot))
@@ -52,7 +52,7 @@ print(data_report(df_obo_uniprot))
 # sequence_df = pd.DataFrame(list(sequences.items()), columns=['UniProt_ID', 'Protein_Sequence'])
 # sequence_df.to_pickle(join(CURRENT_DIR, "..", "data", "processed_data","GO", "gobo_proId2seq.pkl"))
 
-sequence_df = pd.read_pickle(join(CURRENT_DIR, "..", "data", "processed_data","GO", "gobo_proId2seq.pkl"))
+sequence_df = pd.read_pickle(join(CURRENT_DIR, "..", "data", "processed_data", "GO", "gobo_proId2seq.pkl"))
 df_obo_uniprot['Protein_Sequence'] = np.nan
 for _, row in sequence_df.iterrows():
     uniprot_id = row['UniProt_ID']
@@ -63,5 +63,5 @@ for _, row in sequence_df.iterrows():
 df_obo_uniprot.rename(columns={'Uniprot_ID': 'Uni_SwissProt'}, inplace=True)
 df_obo_uniprot.dropna(subset=['Uni_SwissProt'], inplace=True)
 df_obo_uniprot.reset_index(drop=True, inplace=True)
-df_obo_uniprot.to_pickle(join(CURRENT_DIR, "..", "data", "processed_data","GO", "4-2-gobo_enz_sub.pkl"))
+df_obo_uniprot.to_pickle(join(CURRENT_DIR, "..", "data", "processed_data", "GO", "4-2-gobo_enz_sub.pkl"))
 print(data_report(df_obo_uniprot))

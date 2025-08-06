@@ -1,8 +1,9 @@
 import sys
 import warnings
 import requests
+
 warnings.filterwarnings("ignore")
-sys.path.append("/Users/vahidatabaigi/SIP2/Utilities")
+sys.path.append("./../utilities")
 import pandas as pd
 import os
 import pickle

@@ -15,8 +15,10 @@ CURRENT_DIR = os.getcwd()
 warnings.filterwarnings("ignore")
 
 chembl_binding_activities = pd.read_pickle(
-    join(CURRENT_DIR, "..", "data", "processed_data","chembl", "6-4-chembl_binding_activities.pkl"))
+    join(CURRENT_DIR, "..", "data", "processed_data", "chembl", "6-4-chembl_binding_activities.pkl"))
 
+# Source mapping tables:
+# https://chembl.gitbook.io/chembl-interface-documentation/frequently-asked-questions/general-questions
 chembl_chebi = pd.read_csv(join(CURRENT_DIR, "..", "data", "raw_data", "map_chembl_to_other_ids", "src1src7.txt"),
                            sep='\t')
 chembl_chebi = chembl_chebi.rename(columns={"From src:'1'": "ChEMBL_ID", "To src:'7'": 'ChEBI_ID'})
@@ -55,15 +57,16 @@ chembl_binding_activities['molecule_IDs'] = chembl_binding_activities.apply(
     axis=1
 )
 
-# check additional_code folder to see how cofactors_list.txt has been created
-with open(join(CURRENT_DIR, "..", "data", "processed_data","cofactors_list.txt"), "r") as f:
+# Please check additional_code folder to see how cofactors_list.txt has been created
+with open(join(CURRENT_DIR, "..", "data", "processed_data", "cofactors_list.txt"), "r") as f:
     remove_cofactor_energy_ids = [line.strip() for line in f.readlines()]
 
 chembl_binding_activities = chembl_binding_activities.loc[
     ~chembl_binding_activities["molecule_ID"].isin(remove_cofactor_energy_ids)]
 
 chembl_binding_activities.reset_index(drop=True, inplace=True)
-chembl_binding_activities = chembl_binding_activities.rename(columns={'Uniprot_ID': 'Uni_SwissProt', 'canonical_smiles': 'SMILES'})
+chembl_binding_activities = chembl_binding_activities.rename(
+    columns={'Uniprot_ID': 'Uni_SwissProt', 'canonical_smiles': 'SMILES'})
 chembl_binding_activities.to_pickle(
-    join(CURRENT_DIR, "..", "data", "processed_data","chembl",  "6-5-chembl_binding_activities.pkl"))
+    join(CURRENT_DIR, "..", "data", "processed_data", "chembl", "6-5-chembl_binding_activities.pkl"))
 print(data_report(chembl_binding_activities))

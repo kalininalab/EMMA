@@ -8,8 +8,10 @@ import json
 from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry
 from concurrent.futures import ThreadPoolExecutor, as_completed
+
 sys.path.append("./../utilities")
 from utilities.helper_functions import *
+
 CURRENT_DIR = os.getcwd()
 print(CURRENT_DIR)
 
@@ -72,13 +74,14 @@ for ec_pattern in ec_number_patterns:
                         enzyme_name = recommended_name.get('fullName', {}).get("value", "No name available")
                         sequence = detail_data.get("sequence", {}).get("value", "")
                         ec_number_str = ",".join(set([ec["value"] for ec in recommended_name.get("ecNumbers", [])]))
-                        # Extract catalytic activity information
                         if "comments" in detail_data:
 
                             for comment in detail_data["comments"]:
                                 inhibitors = []
                                 evidence_codes = None
-                                if comment.get("commentType") in ["ACTIVITY REGULATION"] and "texts" in comment and "evidences" in comment["texts"][0]:
+                                if comment.get("commentType") in [
+                                    "ACTIVITY REGULATION"] and "texts" in comment and "evidences" in comment["texts"][
+                                    0]:
                                     text = comment["texts"][0]["value"]
                                     text = text.split(". ")
                                     evidences = comment["texts"][0]["evidences"]
@@ -91,7 +94,7 @@ for ec_pattern in ec_number_patterns:
                                             continue
                                     evidences = comment["texts"][0]["evidences"]
                                     evidence_codes = list(set([evidences[0]["evidenceCode"] for evidence in evidences]))
-                                    if len(inhibitors)!=0:
+                                    if len(inhibitors) != 0:
                                         enzyme_data.append({
                                             "ID": enzyme_id,
                                             "Name": enzyme_name,
@@ -116,7 +119,7 @@ for ec_pattern in ec_number_patterns:
 # Post-process and save data
 df = pd.DataFrame(enzyme_data)
 df = df[df["Evidence Codes"] != "No evidence codes"]
-experimental_df = pd.read_pickle(join(CURRENT_DIR, "..", "data", "raw_data","GOA_data", "experimental_df_GO_UID.pkl"))
+experimental_df = pd.read_pickle(join(CURRENT_DIR, "..", "data", "raw_data", "GOA_data", "experimental_df_GO_UID.pkl"))
 evidence_map = dict(zip(experimental_df["ECO_Evidence_code"], experimental_df["evidence"]))
 
 
@@ -131,6 +134,5 @@ print(data_report(df))
 df_exploded = df.explode("Ihibitors_description")
 df_exploded.reset_index(drop=True, inplace=True)
 print(data_report(df_exploded))
-df_exploded.to_pickle(join(CURRENT_DIR, "..", "data", "processed_data","uniprot", "7-1-uniprot_enz-inh.pkl"))
+df_exploded.to_pickle(join(CURRENT_DIR, "..", "data", "processed_data", "uniprot", "7-1-uniprot_enz-inh.pkl"))
 print(data_report(df_exploded))
-
