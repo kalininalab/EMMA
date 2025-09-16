@@ -1,4 +1,5 @@
-[View our detailed documentation PDF](./EMMA.pdf)
+![EMMA Framework Architecture](./EMMA.png)
+*Figure 1: The overall architecture of the EMMA multi-task learning framework.*
 # Description:
 Predicting enzyme–small molecule interactions is critical for drug discovery. 
 While recent deep learning approaches have shown promising results, several challenges remain: 
