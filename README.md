@@ -1,5 +1,8 @@
 ![EMMA Framework Architecture](./EMMA.png)
-*Figure 1: The overall architecture of the EMMA multi-task learning framework.*
+*Figure 1: The overall architecture of the EMMA multi-task learning framework. Self, Cross and FF are abbreviations 
+for self-attention and cross-attention and feed-forward, respectively. Red arrows represent residual connection followed by 
+normalization (summation sign). (a) Modality-specific encoders. (b) Projection block. (c) Dual-stream transformer mechanisms. 
+(d) Concatenation. (e) Task-specific prediction heads.*
 # Description:
 Predicting enzyme–small molecule interactions is critical for drug discovery. 
 While recent deep learning approaches have shown promising results, several challenges remain: 
