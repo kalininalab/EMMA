@@ -20,12 +20,12 @@ we demonstrate that EMMA achieves strong and robust performance, particularly on
 - [Setup Instructions](#setup-instructions)
   - [Folder Structure](#folder-structure)
   - [Setting up `EMMA` Environment](#setting-up-sip-environment)
-- [Data Preparation](#data-preparation)
+- [EMMA Dataset](#data-preparation)
   - [1-DataPreparation.py](#data-preparation)
 - [Splitting Data](#splitting-data-)
   - [2-1-SplitByDataSAIL.py](#2-1-splitbydatasailpy)
   - [2-2-SplitByESP.py](#2-2-splitbyesppy)
-- [Hyperparameter optimization and model training](#hyperparameter-optimization-and-model-training)
+- [Training EMMA model](#hyperparameter-optimization-and-model-training)
   - [3-1-HyperOp_TraningXgb_2Splits.py](#3-1-hyperop_traningxgb_2splitspy)
   - [3-2-HyperOp_TraningXgb_3Splits.py](#3-2-hyperop_traningxgb_3splitspy)
 
@@ -34,26 +34,22 @@ we demonstrate that EMMA achieves strong and robust performance, particularly on
 ```
 ├── EMMA/
 │ ├── data/
-│ │ ├── data_ESP/
-│ │ ├── 2splits/
-│ │ ├── 3splits/
-│ │ ├── data_ProSmith/
-│ │ ├── Reports/
-│ │ ├── training_results_2S
-│ │ └── training_results_3S
-│ └── code/
-│ │ └── additional_code/
-│ └── additional_code
-│ │ └── additional_code/
-│ │ └── additional_code/
-│ │ └── additional_code/
-│ └── splits/
-│ └── training_test_results
-│ └── trained_models
+│ │ ├── Embedded_sequences_t30/
+│ │ ├── Embedded_smiles/
+│ │ ├── processed_data/
+│ │ ├── raw_data/
+│ │ ├── splits/
+│ │ ├── trained_models/
+│ │ └── training_test_results/
+│ ├── code/
+│ ├── additional_code/
+│ ├── utilities/
+│ ├── EMMA.png
+│ └── README.md
 
 ```
 
-### Setting up `ESP_LA` Environment:
+### Setting up `EMMA` Environment:
 * It is recommended to install the packages in order
 
 * For MacOSX M1 desktop 
@@ -87,6 +83,8 @@ we demonstrate that EMMA achieves strong and robust performance, particularly on
       pip install wandb
 
 ## Data Preparation:
+
+[EMMA Framework Architecture](./EMMA_dataset.png)
 
 ### 1-DataPreparation.py:
 
