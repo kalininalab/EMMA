@@ -1,20 +1,21 @@
+[View our detailed documentation PDF](./EMMA.pdf)
 # Description:
-Recently, the deep learning-based model Enzyme-Substrate Prediction ([ESP](https://github.com/AlexanderKroll/ESP)) has
-been introduced to classify enzyme-small molecule pairs as enzyme-substrate or
-enzyme-non-substrate, reaching an accuracy of 0.91. We reanalyzed the data processing
-pipeline and introduced information leakage using our novel method [DataSAIL](https://www.nature.com/articles/s41467-025-58606-8)
-. We demonstrated that the performance of the model is overestimated for out-
-of-distribution (OOD) data, potentially due to information leakage resulting from
-inter-sample similarities and biased negative data generation. Information leakage
-(also called data leakage) describes the phenomenon when information is illicitly shared
-between the training and test data, artificially boosting the performance of a model
-on data, which may be different from the data the model is intended for (inference
-on OOD data). 
+Predicting enzyme–small molecule interactions is critical for drug discovery. 
+While recent deep learning approaches have shown promising results, several challenges remain: 
+the lack of a comprehensive dataset, the need to capture enzyme–small molecule interaction signals, 
+the tendency of previous models to simplify the problem as enzyme–substrate vs. enzyme--non-interacting, 
+thereby, misclassify enzyme–inhibitor pairs as substrates, and the true impact of data leakage on model performance. 
+To address these issues, we present EMMA, a transformer-based multi-task learning framework designed to 
+learn pairwise interaction signals between enzymes and small molecules while adapting to out-of-distribution data. 
+EMMA operates directly on SMILES strings and enzyme sequences, 
+with two classification heads that distinguish enzyme–substrate, enzyme–non-interacting, and enzyme–inhibitor pairs. 
+By evaluating EMMA under four distinct data-splitting regimes that control for different types of leakage, 
+we demonstrate that EMMA achieves strong and robust performance, particularly on novel enzyme–small molecule combinations. 
 
 ## Table of Contents:
 - [Setup Instructions](#setup-instructions)
   - [Folder Structure](#folder-structure)
-  - [Setting up `ESP_LA` Environment](#setting-up-sip-environment)
+  - [Setting up `EMMA` Environment](#setting-up-sip-environment)
 - [Data Preparation](#data-preparation)
   - [1-DataPreparation.py](#data-preparation)
 - [Splitting Data](#splitting-data-)
