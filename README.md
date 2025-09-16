@@ -85,7 +85,7 @@ we demonstrate that EMMA achieves strong and robust performance, particularly on
 ## Data Preparation:
 <figure>
   <img src="./EMMA_dataset.png" alt="EMMA Dataset" width="400" />
-  <figcaption><em>Figure 1: Overview and its sources </em></figcaption>
+  <figcaption><em>Figure 1: Overview of EMMA dataset  processing and its sources </em></figcaption>
 </figure>
 
 ### 1-DataPreparation.py:
