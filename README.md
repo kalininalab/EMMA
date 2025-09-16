@@ -83,8 +83,10 @@ we demonstrate that EMMA achieves strong and robust performance, particularly on
       pip install wandb
 
 ## Data Preparation:
-
-[EMMA Framework Architecture](./EMMA_dataset.png)
+<figure>
+  <img src="./EMMA_dataset.png" alt="EMMA Dataset" width="600" />
+  <figcaption><em>Figure 1: Overview and its sources </em></figcaption>
+</figure>
 
 ### 1-DataPreparation.py:
 
