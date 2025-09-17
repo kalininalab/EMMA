@@ -140,11 +140,11 @@ This table outlines an overview of all different split strategies used in this p
 
 ## Training EMMA:
 
-### 14-2-SplitByDataSAIL_LabelBased.py:
+### 16-SelfCrossAttentionDualStreamTransformer.py:
 
-        python 14-2-SplitByDataSAIL_LabelBased.py --used_split_tech C2 --molecule_column_name MolFormer --protein_column_name ESM2t30
-        python 14-2-SplitByDataSAIL_LabelBased.py --used_split_tech C1f --molecule_column_name MolFormer --protein_column_name ESM2t30
-        python 14-2-SplitByDataSAIL_LabelBased.py --used_split_tech C1e --molecule_column_name MolFormer --protein_column_name ESM2t30 
-        python 14-2-SplitByDataSAIL_LabelBased.py --used_split_tech C1 --molecule_column_name MolFormer --protein_column_name ESM2t30
+        python 16-SelfCrossAttentionDualStreamTransformer.py --used_split_tech C2 --molecule_column_name MolFormer --protein_column_name ESM2t30
+        python 16-SelfCrossAttentionDualStreamTransformer.py --used_split_tech C1f --molecule_column_name MolFormer --protein_column_name ESM2t30
+        python 16-SelfCrossAttentionDualStreamTransformer.py --used_split_tech C1e --molecule_column_name MolFormer --protein_column_name ESM2t30 
+        python 16-SelfCrossAttentionDualStreamTransformer.py --used_split_tech C1 --molecule_column_name MolFormer --protein_column_name ESM2t30
 * `--used_split_tech` It automatically reload the related train and test sets
 
