@@ -107,9 +107,6 @@ we demonstrate that EMMA achieves strong and robust performance, particularly on
         python 13-1-MolFormer_XL.py --input-path ./../data/processed_data/Final_Dataset.pkl --output-path ./../data/Embedded_smiles/
         python 13-2-ESM2_t30.py  --input-path ./../data/processed_data/Final_Dataset.pkl --output-path ./../data/Embedded_sequences_t30/
 
-## Splitting Data:
-* This table outlines an overview of all different split strategies we used in this project.
-
 ## Splitting Data
 
 This table outlines an overview of all different split strategies used in this project, including the number of training and test samples as well as the ratios of enzyme–inhibitor, enzyme–substrate, and enzyme–non-interacting pairs.
