@@ -28,7 +28,7 @@ we demonstrate that EMMA achieves strong and robust performance, particularly on
   - [12-Pooling_All_Data.py](#pooling)
 - [Embedding](#embedding)
   - [13-1-MoLFormer-XL.py](#smiles)
-  - [13-2-ESM2.py](#enzyme)
+  - [13-2-ESM2_t30.py](#enzyme)
 - [Data Splitting](#splitting-data-)
   - [14-1-SplitByDataSAIL.py](#2-1-splitbydatasailpy)
   - [14-2-SplitByDataSAIL_LabelBased.py](#2-2-splitbyesppy)
@@ -56,6 +56,7 @@ we demonstrate that EMMA achieves strong and robust performance, particularly on
 │ ├── additional_code/
 │ ├── utilities/
 │ ├── EMMA.png
+│ ├── EMMA_dataset.png
 │ └── README.md
 
 ```
