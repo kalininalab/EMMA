@@ -20,19 +20,25 @@ we demonstrate that EMMA achieves strong and robust performance, particularly on
 - [Setup Instructions](#setup-instructions)
   - [Folder Structure](#folder-structure)
   - [Setting up `EMMA` Environment](#setting-up-sip-environment)
-- [EMMA Dataset](#data-preparation)
-  - [1-.py](#data-preparation)
+- [Create EMMA Dataset](#data-preparation)
+  - [1-Search_GO_annotation.py](#search-Go)
   - .
   - .
   - .
-  - [12-.py](#data-preparation)
+  - [12-Pooling_All_Data.py](#pooling)
 - [Embedding](#embedding)
+  - [13-1-MoLFormer-XL.py](#smiles)
+  - [13-2-ESM2.py](#enzyme)
 - [Data Splitting](#splitting-data-)
-  - [2-1-SplitByDataSAIL.py](#2-1-splitbydatasailpy)
-  - [2-2-SplitByESP.py](#2-2-splitbyesppy)
-- [Training EMMA model](#hyperparameter-optimization-and-model-training)
-  - [3-1-HyperOp_TraningXgb_2Splits.py](#3-1-hyperop_traningxgb_2splitspy)
-  - [3-2-HyperOp_TraningXgb_3Splits.py](#3-2-hyperop_traningxgb_3splitspy)
+  - [14-1-SplitByDataSAIL.py](#2-1-splitbydatasailpy)
+  - [14-2-SplitByDataSAIL_LabelBased.py](#2-2-splitbyesppy)
+- [Map Embedding To Splits](#hyperparameter-optimization-and-model-training)
+  - [15-MapEmbeddingsOutputsToIDs.py](#3-1-hyperop_traningxgb_2splitspy)
+- [Training EMMA](#hyperparameter-optimization-and-model-training)
+  - [16-SelfCrossAttentionDualStreamTransformer.py](#3-1-hyperop_traningxgb_2splitspy)
+- [Results and Analysis](#hyperparameter-optimization-and-model-training)
+  - [17-1-Data_leakage_calculation.py](#3-1-hyperop_traningxgb_2splitspy)
+  - [17-2-Results_and_Analysis.ipynb](#3-2-hyperop_traningxgb_3splitspy)
 
 ## Setup Instructions:
 ###  Folder structure:
