@@ -30,15 +30,15 @@ we demonstrate that EMMA achieves strong and robust performance, particularly on
   - [13-1-MoLFormer-XL.py](#smiles)
   - [13-2-ESM2_t30.py](#enzyme)
 - [Data Splitting](#data-splitting)
-  - [14-1-SplitByDataSAIL.py](#2-1-splitbydatasailpy)
-  - [14-2-SplitByDataSAIL_LabelBased.py](#2-2-splitbyesppy)
+  - [14-1-SplitByDataSAIL.py]()
+  - [14-2-SplitByDataSAIL_LabelBased.py]()
 - [Map Embedding To Splits](#map-embedding-to-splits)
-  - [15-MapEmbeddingsOutputsToIDs.py](#3-1-hyperop_traningxgb_2splitspy)
+  - [15-MapEmbeddingsOutputsToIDs.py]()
 - [Training EMMA](#training-emma)
-  - [16-SelfCrossAttentionDualStreamTransformer.py](#3-1-hyperop_traningxgb_2splitspy)
-- [Results and Analysis](#hyperparameter-optimization-and-model-training)
-  - [17-1-Data_leakage_calculation.py](#3-1-hyperop_traningxgb_2splitspy)
-  - [17-2-Results_and_Analysis.ipynb](#3-2-hyperop_traningxgb_3splitspy)
+  - [16-SelfCrossAttentionDualStreamTransformer.py]()
+- [Results and Analysis](#results-and-analysis)
+  - [17-1-Data_leakage_calculation.py]()
+  - [17-2-Results_and_Analysis.ipynb]()
 
 ## Setup Instructions:
 ###  Folder structure:
