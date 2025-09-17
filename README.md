@@ -21,8 +21,13 @@ we demonstrate that EMMA achieves strong and robust performance, particularly on
   - [Folder Structure](#folder-structure)
   - [Setting up `EMMA` Environment](#setting-up-sip-environment)
 - [EMMA Dataset](#data-preparation)
-  - [1-DataPreparation.py](#data-preparation)
-- [Splitting Data](#splitting-data-)
+  - [1-.py](#data-preparation)
+  - .
+  - .
+  - .
+  - [12-.py](#data-preparation)
+- [Embedding](#embedding)
+- [Data Splitting](#splitting-data-)
   - [2-1-SplitByDataSAIL.py](#2-1-splitbydatasailpy)
   - [2-2-SplitByESP.py](#2-2-splitbyesppy)
 - [Training EMMA model](#hyperparameter-optimization-and-model-training)
@@ -82,7 +87,7 @@ we demonstrate that EMMA achieves strong and robust performance, particularly on
       pip install libchebipy==1.0.10
       pip install wandb
 
-## Data Preparation:
+## EMMA Dataset:
 <figure>
   <img src="./EMMA_dataset.png" alt="EMMA Dataset" width="400" />
   <figcaption><em>Figure 1: Overview of EMMA dataset processing steps and its sources </em></figcaption>
