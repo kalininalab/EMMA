@@ -20,21 +20,21 @@ we demonstrate that EMMA achieves strong and robust performance, particularly on
 - [Setup Instructions](#setup-instructions)
   - [Folder Structure](#folder-structure)
   - [Setting up `EMMA` Environment](#setting-up-sip-environment)
-- [Create EMMA Dataset](#data-preparation)
-  - [1-Search_GO_annotation.py](#search-Go)
+- [Creating EMMA Dataset](#creating-emma-dataset)
+  - [1-Search_GO_annotation.py]()
   - .
   - .
   - .
-  - [12-Pooling_All_Data.py](#pooling)
+  - [12-Pooling_All_Data.py]()
 - [Embedding](#embedding)
   - [13-1-MoLFormer-XL.py](#smiles)
   - [13-2-ESM2_t30.py](#enzyme)
-- [Data Splitting](#splitting-data-)
+- [Data Splitting](#data-splitting)
   - [14-1-SplitByDataSAIL.py](#2-1-splitbydatasailpy)
   - [14-2-SplitByDataSAIL_LabelBased.py](#2-2-splitbyesppy)
-- [Map Embedding To Splits](#hyperparameter-optimization-and-model-training)
+- [Map Embedding To Splits](#map-embedding-to-splits)
   - [15-MapEmbeddingsOutputsToIDs.py](#3-1-hyperop_traningxgb_2splitspy)
-- [Training EMMA](#hyperparameter-optimization-and-model-training)
+- [Training EMMA](#training-emma)
   - [16-SelfCrossAttentionDualStreamTransformer.py](#3-1-hyperop_traningxgb_2splitspy)
 - [Results and Analysis](#hyperparameter-optimization-and-model-training)
   - [17-1-Data_leakage_calculation.py](#3-1-hyperop_traningxgb_2splitspy)
@@ -66,7 +66,7 @@ we demonstrate that EMMA achieves strong and robust performance, particularly on
       conda activate EMMA
       conda config --set channel_priority strict
       conda config --set solver libmamba
-      conda install mamba -n SIP -c conda-forge
+      conda install mamba -n EMMA -c conda-forge
       mamba clean -a
       mamba install -c conda-forge -c bioconda -c kalininalab datasail
       conda install conda-forge::biopython
@@ -94,7 +94,7 @@ we demonstrate that EMMA achieves strong and robust performance, particularly on
           - pytorch-toolbelt
           - wandb==0.19.8
 
-## EMMA Dataset:
+## Creating EMMA Dataset:
 <figure>
   <img src="./EMMA_dataset.png" alt="EMMA Dataset" width="400" />
   <figcaption><em>Figure 1: Overview of EMMA dataset processing steps and its sources </em></figcaption>
@@ -107,7 +107,7 @@ we demonstrate that EMMA achieves strong and robust performance, particularly on
         python 13-1-MolFormer_XL.py --input-path ./../data/processed_data/Final_Dataset.pkl --output-path ./../data/Embedded_smiles/
         python 13-2-ESM2_t30.py  --input-path ./../data/processed_data/Final_Dataset.pkl --output-path ./../data/Embedded_sequences_t30/
 
-## Splitting Data
+## Data Splitting
 
 This table outlines an overview of all different split strategies used in this project, including the number of training and test samples as well as the ratios of enzyme–inhibitor, enzyme–substrate, and enzyme–non-interacting pairs.
 
@@ -136,7 +136,12 @@ This table outlines an overview of all different split strategies used in this p
 ### 14-2-SplitByDataSAIL_LabelBased.py:
         python 14-2-SplitByDataSAIL_LabelBased.py --split-method C1 --split-size 8 2 --strat True --input-path ./../data/processed_data/Final_Dataset.pkl --output-path ./../data/splits --epsilon-value 0.01 --delta-value 0.01
 
-
+## Map Embedding To Splits
+### 15-MapEmbeddingsOutputsToIDs.py:
+        python 15-MapEmbeddingsOutputsToIDs.py  --path-split-folder ./../data/splits/C2_epsilon0.01_delta0.01_2S  --path-embedding-smiles ./../data/Embedded_smiles --path-embedded-sequence ./../data/Embedded_sequences_t30
+        python 15-MapEmbeddingsOutputsToIDs.py  --path-split-folder ./../data/splits/C1f_epsilon0.01_delta0.01_2S  --path-embedding-smiles ./../data/Embedded_smiles --path-embedded-sequence ./../data/Embedded_sequences_t30
+        python 15-MapEmbeddingsOutputsToIDs.py  --path-split-folder ./../data/splits/C1e_epsilon0.003_delta0.003_2S  --path-embedding-smiles ./../data/Embedded_smiles --path-embedded-sequence ./../data/Embedded_sequences_t30
+        python 15-MapEmbeddingsOutputsToIDs.py  --path-split-folder ./../data/splits/C1_epsilon0.01_delta0.01_2S  --path-embedding-smiles ./../data/Embedded_smiles --path-embedded-sequence ./../data/Embedded_sequences_t30
 
 ## Training EMMA:
 
@@ -147,4 +152,9 @@ This table outlines an overview of all different split strategies used in this p
         python 16-SelfCrossAttentionDualStreamTransformer.py --used_split_tech C1e --molecule_column_name MolFormer --protein_column_name ESM2t30 
         python 16-SelfCrossAttentionDualStreamTransformer.py --used_split_tech C1 --molecule_column_name MolFormer --protein_column_name ESM2t30
 * `--used_split_tech` It automatically reload the related train and test sets
+
+## Results and Analysis
+### 17-1-Data_leakage_calculation.py:
+### 17-2-Results_and_Analysis.ipynb:
+
 
