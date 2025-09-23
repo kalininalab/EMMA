@@ -1,4 +1,3 @@
-# V22 two head
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
@@ -84,14 +83,6 @@ class EnzMolDataset(Dataset):
             self.interaction_labels[idx],
             self.subclass_labels[idx]
         )
-
-
-def collate_fn(batch):
-    protein = torch.stack([item[0] for item in batch])
-    molecule = torch.stack([item[1] for item in batch])
-    interaction_labels = torch.stack([item[2] for item in batch])
-    subclass_labels = torch.stack([item[3] for item in batch])
-    return protein, molecule, interaction_labels, subclass_labels
 
 
 def multi_task_loss(interaction_logits, subclass_logits, interaction_labels, subclass_labels, split_tech):
@@ -215,20 +206,14 @@ def main(args):
 
     # Load data
     df_data = pd.read_pickle(os.path.join(current_dir, "..", "data", "splits", f"train_{split_tech}_2S.pkl"))
-    train_path = os.path.join(current_dir, "..", "data", "splits", f"training_{split_tech}_2S.pkl")
-    val_path = os.path.join(current_dir, "..", "data", "splits", f"val_{split_tech}_2S.pkl")
-    if os.path.exists(train_path) and os.path.exists(val_path):
-        df_train = pd.read_pickle(train_path)
-        df_val = pd.read_pickle(val_path)
-    else:
-        df_train, df_val = train_test_split(df_data, test_size=0.2, random_state=42, stratify=df_data['Binding'])
-        os.makedirs(os.path.dirname(train_path), exist_ok=True)
-        df_train.to_pickle(train_path)
-        df_val.to_pickle(val_path)
+    df_train, df_val = train_test_split(df_data,
+                                        test_size=0.2,
+                                        random_state=args.current_seed,
+                                        stratify=df_data['Binding'])
     train_dataset = EnzMolDataset(df_train, args.protein_column_name, args.molecule_column_name)
     val_dataset = EnzMolDataset(df_val, args.protein_column_name, args.molecule_column_name)
-    train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True, collate_fn=collate_fn)
-    val_loader = DataLoader(val_dataset, batch_size=batch_size, shuffle=False, collate_fn=collate_fn)
+    train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True)
+    val_loader = DataLoader(val_dataset, batch_size=batch_size, shuffle=False)
     # Initialize model
     model = EMMA(
         protein_dim=640,  # ESM2 embedding size
@@ -304,7 +289,7 @@ def main(args):
     # Final test evaluation
     df_test = pd.read_pickle(os.path.join(current_dir, "..", "data", "splits", f"test_{split_tech}_2S.pkl"))
     test_dataset = EnzMolDataset(df_test, args.protein_column_name, args.molecule_column_name)
-    test_loader = DataLoader(test_dataset, batch_size=64, shuffle=False, collate_fn=collate_fn)
+    test_loader = DataLoader(test_dataset, batch_size=64, shuffle=False)
 
     # How to load model for validation
     loaded_model = EMMA(
