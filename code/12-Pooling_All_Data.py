@@ -266,22 +266,3 @@ print(f"Number of ChEBI IDs: {len(chebi_ids)}")
 print(f"Number of Chembel IDs: {len(chembel_ids)}")
 print(f"Number of KEGG IDs: {len(kegg_ids)}")
 
-# Group by 'Uni_SwissProt' and count the number of unique labels for each group
-label_counts = final_dataset.groupby('Uni_SwissProt')['Binding'].nunique()
-
-# Count how many Uni_SwissProt have 1, 2, or 3 unique labels
-count_1_label = (label_counts == 1).sum()
-count_2_labels = (label_counts == 2).sum()
-count_3_labels = (label_counts == 3).sum()
-
-# Total number of unique Uni_SwissProt entries
-total_uni = len(label_counts)
-
-# Calculate percentages
-percent_1_label = (count_1_label / total_uni) * 100
-percent_2_labels = (count_2_labels / total_uni) * 100
-percent_3_labels = (count_3_labels / total_uni) * 100
-
-print(f"Percentage of Uni_SwissProt with 1 label: {percent_1_label:.2f}%")
-print(f"Percentage of Uni_SwissProt with 2 labels: {percent_2_labels:.2f}%")
-print(f"Percentage of Uni_SwissProt with 3 labels: {percent_3_labels:.2f}%")
