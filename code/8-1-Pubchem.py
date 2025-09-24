@@ -224,24 +224,11 @@ def process_assay(aid):
 
 
 def main():
-    term_1 = """
-(IC50[ResultType] OR binding[AssayType] OR "IC50"[Title] OR IC50 OR Ki OR Kd OR validated OR "dose response" OR "concentration response"
- AND
-  (
-    protein[TargetType] OR enzyme[TargetType]
-    
-      AND
-  (
-    IC50 OR Ki OR Kd OR Km OR EC50 OR "IC 50" OR "K i" OR "K d" OR "K m" OR
-    "inhibition constant" OR "dissociation constant" OR "Michaelis constant" OR
-    "binding affinity" OR "binding constant" OR "dose response"
-  )
-"""
+    term = """Insert term here from the terms file in ./../data/processed_data/Pubchem"""
 
     create_directory(RESULTS_DIR)
     if not any(f.startswith("assay_chunk_") for f in os.listdir(RESULTS_DIR)):
-
-        # assay_ids = extract_pubchem_bioassay_id(term_1)
+        # assay_ids = extract_pubchem_bioassay_id(term)
         # existing_aids_with_ec,existing_aids_without_ec = get_existing_aids()
         # assay_list = [aid for aid in assay_ids if aid not in existing_aids_with_ec]
         # assay_list = [aid for aid in assay_list if aid not in existing_aids_without_ec]

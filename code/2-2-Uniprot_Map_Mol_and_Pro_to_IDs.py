@@ -27,6 +27,7 @@ uniprot_enz_sub.reset_index(drop=True, inplace=True)
 print(data_report(uniprot_enz_sub))
 
 mol2ids = pd.read_pickle(join(CURRENT_DIR, "..", "data", "raw_data", "molecule_name_to_ids", "mol2ids.pkl"))
+print(data_report(mol2ids))
 uniprot_enz_sub["Substrate"] = [name.lower() for name in uniprot_enz_sub["Substrate"]]
 mol2ids_dict = dict(zip(mol2ids['molecule_name'], mol2ids['molecule_ID']))
 uniprot_enz_sub['molecule_ID'].fillna(uniprot_enz_sub['Substrate'].map(mol2ids_dict), inplace=True)
