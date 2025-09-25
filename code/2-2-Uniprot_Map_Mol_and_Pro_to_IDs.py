@@ -66,9 +66,9 @@ print(data_report(uniprot_enz_sub))
 ##############################
 # Map PubChem ID  to SMILES
 ##############################
-cid_to_smiles = pubchem2smiles(pubchem_ids)
-cid_to_smiles_df = pd.DataFrame(list(cid_to_smiles.items()), columns=['PubChem_ID', 'SMILES'])
-cid_to_smiles_df.to_pickle(join(CURRENT_DIR, "..", "data", "processed_data", "uniprot", "UniAct_cid2smiles.pkl"))
+# cid_to_smiles = pubchem2smiles(pubchem_ids)
+# cid_to_smiles_df = pd.DataFrame(list(cid_to_smiles.items()), columns=['PubChem_ID', 'SMILES'])
+# cid_to_smiles_df.to_pickle(join(CURRENT_DIR, "..", "data", "processed_data", "uniprot", "UniAct_cid2smiles.pkl"))
 
 cid_to_smiles_df = pd.read_pickle(join(CURRENT_DIR, "..", "data", "processed_data", "uniprot", "UniAct_cid2smiles.pkl"))
 cid_to_smiles = dict(zip(cid_to_smiles_df['PubChem_ID'], cid_to_smiles_df['SMILES']))
@@ -78,9 +78,9 @@ print(data_report(uniprot_enz_sub))
 ##############################
 # Map KEGG ID  to SMILES
 ##############################
-dict_kegg2smiles = kegg2smiles(kegg_ids)
-kegg_to_smiles_df = pd.DataFrame(list(dict_kegg2smiles.items()), columns=['KEGG', 'SMILES'])
-kegg_to_smiles_df.to_pickle(join(CURRENT_DIR, "..", "data", "processed_data", "uniprot", "UniAct_kegg2smiles.pkl"))
+# dict_kegg2smiles = kegg2smiles(kegg_ids)
+# kegg_to_smiles_df = pd.DataFrame(list(dict_kegg2smiles.items()), columns=['KEGG', 'SMILES'])
+# kegg_to_smiles_df.to_pickle(join(CURRENT_DIR, "..", "data", "processed_data", "uniprot", "UniAct_kegg2smiles.pkl"))
 
 kegg_to_smiles_df = pd.read_pickle(
     join(CURRENT_DIR, "..", "data", "processed_data", "uniprot", "UniAct_kegg2smiles.pkl"))

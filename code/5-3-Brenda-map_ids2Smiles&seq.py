@@ -204,3 +204,8 @@ final_enz_sub.to_pickle(join(CURRENT_DIR, "..", "data", "processed_data", "brend
 final_enz_inh.to_pickle(join(CURRENT_DIR, "..", "data", "processed_data", "brenda", "5-3-brenda_enz_inh.pkl"))
 print(data_report(final_enz_inh))
 print(data_report(final_enz_sub))
+brenda_final=pd.concat([final_enz_inh, final_enz_sub])
+brenda_final_eec=brenda_final[brenda_final["Evidence"] == "EEC"]
+brenda_final_baa=brenda_final[brenda_final["Evidence"] == "BAA"]
+print(data_report(brenda_final_eec))
+print(data_report(brenda_final_baa))

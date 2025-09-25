@@ -51,7 +51,6 @@ def get_sabio_data():
 
 sabio_data = pd.read_csv(join(CURRENT_DIR, "..", "data", "processed_data", "sabio", "10-sabio_rk_results.tsv"),
                          sep='\t')
-print(data_report(sabio_data))
 
 
 def extract_substrate(df):
@@ -119,7 +118,8 @@ def extract_inhibitors(df):
 
 substrate_df = extract_substrate(sabio_data)
 inhibitors_df = extract_inhibitors(sabio_data)
-
+final_sabio=pd.concat([substrate_df, inhibitors_df])
+print(data_report(final_sabio))
 #######################################
 # Pubchem
 #######################################

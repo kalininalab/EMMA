@@ -22,6 +22,7 @@ PARAMS_MAP = {
     "C2": C2_params,
     "C1e": C1e_params,
     "C1f": C1e_params,
+    "R": R_params,
     "C1": C1_params
 }
 

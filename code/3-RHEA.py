@@ -71,10 +71,10 @@ df_RHEA_exploded['SMILES'] = df_RHEA_exploded['ChEBI_ID'].map(dict_chebi2smiles)
 #######################################
 # Get sequence
 #######################################
-uniprot_id = df_RHEA_exploded['Uniprot_ID'].unique()
-sequences = get_protein_sequences_with_retry(uniprot_id)
-sequence_df = pd.DataFrame(list(sequences.items()), columns=['UniProt_ID', 'Protein_Sequence'])
-sequence_df.to_pickle(join(CURRENT_DIR, "..", "data", "processed_data", "rhea", "Rhea_proId2seq.pkl"))
+# uniprot_id = df_RHEA_exploded['Uniprot_ID'].unique()
+# sequences = get_protein_sequences_with_retry(uniprot_id)
+# sequence_df = pd.DataFrame(list(sequences.items()), columns=['UniProt_ID', 'Protein_Sequence'])
+# sequence_df.to_pickle(join(CURRENT_DIR, "..", "data", "processed_data", "rhea", "Rhea_proId2seq.pkl"))
 
 sequence_df = pd.read_pickle(join(CURRENT_DIR, "..", "data", "processed_data", "rhea", "Rhea_proId2seq.pkl"))
 df_RHEA_exploded['Protein_Sequence'] = np.nan

@@ -90,7 +90,7 @@ enz_inh = enzyme_interactions[
     (enzyme_interactions['standard_value'] > 0) &
     (enzyme_interactions['standard_value'] <= EnInh_KiIcMic_nM)
 ]
-
+print(data_report(enzyme_interactions))
 enz_ni = enzyme_interactions[(enzyme_interactions['standard_type'].isin(["IC50", "Ki", 'Kd', 'EC50'])) &
                              (enzyme_interactions['standard_value'] >= EnNi_KiECKdIC_nM)]
 

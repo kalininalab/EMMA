@@ -35,7 +35,7 @@ import logging
 
 rdBase.DisableLog('rdApp.*')
 sys.path.append("./")
-from thresholds import *
+from utilities.thresholds import *
 warnings.filterwarnings("ignore")
 
 
