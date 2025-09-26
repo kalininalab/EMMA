@@ -6,6 +6,7 @@ import warnings
 import sys
 import time
 from rdkit import Chem
+
 CURRENT_DIR = os.getcwd()
 print(CURRENT_DIR)
 warnings.filterwarnings("ignore")
@@ -156,11 +157,10 @@ def similarity_based_leakage_calculator(train_df, test_df, val_df=None):
 
 
 results = []
-splits = ["C1f", "C1e","C1","C2"]
+splits = ["C1f", "C1e", "C1", "C2", "R"]
 for s in splits:
     print(f"Start leakage calculation for {s}")
     train = pd.read_pickle(join("..", "data", "splits", f"train_{s}_2S.pkl"))
-    # val = pd.read_pickle(join("..", "data", "splits", f"val_{s}_2S.pkl"))
     test = pd.read_pickle(join("..", "data", "splits", f"test_{s}_2S.pkl"))
     leakage = similarity_based_leakage_calculator(train, test)
     leakage['Split method'] = s

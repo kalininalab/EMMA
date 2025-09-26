@@ -35,7 +35,7 @@ import logging
 
 rdBase.DisableLog('rdApp.*')
 sys.path.append("./")
-from utilities.thresholds import *
+from thresholds import *
 warnings.filterwarnings("ignore")
 
 
@@ -1132,6 +1132,131 @@ def create_results_table(results, split_methods):
     return inter_df, sub_df
 
 
+# def plot_leakage(df_results):
+#     plt.style.use('default')
+#     mpl.rcParams['font.family'] = 'Arial'
+#     mpl.rcParams['font.size'] = 6
+#     mpl.rcParams['axes.linewidth'] = 0.5
+#     mpl.rcParams['lines.linewidth'] = 1.5
+#     mpl.rcParams['xtick.major.size'] = 3
+#     mpl.rcParams['ytick.major.size'] = 3
+#     mpl.rcParams['xtick.major.width'] = 0.5
+#     mpl.rcParams['ytick.major.width'] = 0.5
+#     mpl.rcParams['figure.dpi'] = 150
+#     mpl.rcParams['savefig.dpi'] = 600
+#     mpl.rcParams['savefig.bbox'] = 'tight'
+#     mpl.rcParams['savefig.pad_inches'] = 0.1
+#     # Create a 2x2 grid with the top plot spanning both columns
+#     fig = plt.figure(figsize=(7.0, 8.0))
+#     gs = fig.add_gridspec(2, 2, height_ratios=[1.2, 1], hspace=0.4, wspace=0.3)
+#     # Top plot: Grouped bar chart (spans both columns)
+#     ax1 = fig.add_subplot(gs[0, :])
+#     # Prepare data for grouped bars
+#     split_methods = df_results['Split method']
+#     categories = ['MSL', 'ESL']
+#     values = df_results[['train_test_smiles_leakage', 'train_test_protein_leakage']].values.T
+#     # Create grouped bars
+#     x = range(len(split_methods))
+#     width = 0.3
+#     colors = ['#8da0cb', '#fc8d62']
+#     bars1 = ax1.bar([i - width/2 for i in x], values[0], width, color=colors[0],
+#                    label='MSL', alpha=0.8, edgecolor='black', linewidth=0.5)
+#     bars2 = ax1.bar([i + width/2 for i in x], values[1], width, color=colors[1],
+#                    label='ESL', alpha=0.8, edgecolor='black', linewidth=0.5)
+#     # Customize top plot
+#     ax1.set_xlabel('Split Method')
+#     ax1.set_ylabel('Leakage Score')
+#     ax1.set_xticks(x)
+#     ax1.set_xticklabels(split_methods)
+#     ax1.set_ylim(0, 0.55)
+#     ax1.set_yticks(np.arange(0, 0.6, 0.1))
+#     ax1.tick_params(axis='both', which='major', labelsize=6)
+#     # Add legend
+#     ax1.legend(loc='upper left', fontsize=7, frameon=True,
+#               fancybox=False, edgecolor='black', framealpha=0.9)
+#     # Remove top and right spines
+#     ax1.spines['top'].set_visible(False)
+#     ax1.spines['right'].set_visible(False)
+#     # Add grid
+#     ax1.grid(True, linestyle=':', alpha=0.3)
+#     # Add value labels on bars
+#     for bars in [bars1, bars2]:
+#         for bar in bars:
+#             height = bar.get_height()
+#             ax1.text(bar.get_x() + bar.get_width()/2., height + 0.01,
+#                     f'{height:.3f}', ha='center', va='bottom', fontsize=7, fontweight='bold')
+#     # Add title to the top plot
+#     ax1.set_title('a', fontsize=8, fontweight='bold', pad=10)
+#     # Left bottom plot: Correlation with AUROC_Inter
+#     ax2 = fig.add_subplot(gs[1, 0])
+#     # Plot correlation with AUROC_Inter (without individual legends)
+#     ax2.scatter(df_results['train_test_smiles_leakage'], df_results['AUROC_Inter'],
+#                color='#8da0cb', s=60, alpha=0.8, edgecolor='black', linewidth=0.5, label='MSL')
+#     ax2.scatter(df_results['train_test_protein_leakage'], df_results['AUROC_Inter'],
+#                color='#fc8d62', s=60, alpha=0.8, edgecolor='black', linewidth=0.5, label='ESL')
+#     # Add regression lines
+#     z1 = np.polyfit(df_results['train_test_smiles_leakage'], df_results['AUROC_Inter'], 1)
+#     p1 = np.poly1d(z1)
+#     ax2.plot(df_results['train_test_smiles_leakage'], p1(df_results['train_test_smiles_leakage']),
+#             color='#8da0cb', linestyle='--', alpha=0.7, linewidth=1)
+#     z2 = np.polyfit(df_results['train_test_protein_leakage'], df_results['AUROC_Inter'], 1)
+#     p2 = np.poly1d(z2)
+#     ax2.plot(df_results['train_test_protein_leakage'], p2(df_results['train_test_protein_leakage']),
+#             color='#fc8d62', linestyle='--', alpha=0.7, linewidth=1)
+#     # Customize middle plot
+#     ax2.set_xlabel('Leakage Score')
+#     ax2.set_ylabel('AUROC')
+#     ax2.grid(True, linestyle=':', alpha=0.3)
+#     # Remove top and right spines
+#     ax2.spines['top'].set_visible(False)
+#     ax2.spines['right'].set_visible(False)
+#     # Add correlation coefficient annotations
+#     corr_msl_inter = df_results['train_test_smiles_leakage'].corr(df_results['AUROC_Inter'])
+#     corr_esl_inter = df_results['train_test_protein_leakage'].corr(df_results['AUROC_Inter'])
+#     ax2.text(0.07, 0.95, f'MSL r = {corr_msl_inter:.3f}', transform=ax2.transAxes,
+#              fontsize=6, color='#8da0cb', verticalalignment='top')
+#     ax2.text(0.07, 0.85, f'ESL r = {corr_esl_inter:.3f}', transform=ax2.transAxes,
+#              fontsize=6, color='#fc8d62', verticalalignment='top')
+#     # Add title to the left bottom plot
+#     ax2.set_title('b', fontsize=8, fontweight='bold', pad=10)
+#     # Right bottom plot: Correlation with AUROC_Sub
+#     ax3 = fig.add_subplot(gs[1, 1])
+#     # Plot correlation with AUROC_Sub (without individual legends)
+#     ax3.scatter(df_results['train_test_smiles_leakage'], df_results['AUROC_Sub'],
+#                color='#8da0cb', s=60, alpha=0.8, edgecolor='black', linewidth=0.5, label='MSL')
+#     ax3.scatter(df_results['train_test_protein_leakage'], df_results['AUROC_Sub'],
+#                color='#fc8d62', s=60, alpha=0.8, edgecolor='black', linewidth=0.5, label='ESL')
+#     # Add regression lines
+#     z1_sub = np.polyfit(df_results['train_test_smiles_leakage'], df_results['AUROC_Sub'], 1)
+#     p1_sub = np.poly1d(z1_sub)
+#     ax3.plot(df_results['train_test_smiles_leakage'], p1_sub(df_results['train_test_smiles_leakage']),
+#             color='#8da0cb', linestyle='--', alpha=0.7, linewidth=1)
+#     z2_sub = np.polyfit(df_results['train_test_protein_leakage'], df_results['AUROC_Sub'], 1)
+#     p2_sub = np.poly1d(z2_sub)
+#     ax3.plot(df_results['train_test_protein_leakage'], p2_sub(df_results['train_test_protein_leakage']),
+#             color='#fc8d62', linestyle='--', alpha=0.7, linewidth=1)
+#     # Customize bottom plot
+#     ax3.set_xlabel('Leakage Score')
+#     # ax3.set_ylabel('AUROC (Substrate)')
+#     ax3.grid(True, linestyle=':', alpha=0.3)
+#     # Remove top and right spines
+#     ax3.spines['top'].set_visible(False)
+#     ax3.spines['right'].set_visible(False)
+#     # Add correlation coefficient annotations
+#     corr_msl_sub = df_results['train_test_smiles_leakage'].corr(df_results['AUROC_Sub'])
+#     corr_esl_sub = df_results['train_test_protein_leakage'].corr(df_results['AUROC_Sub'])
+#     ax3.text(0.07, 0.95, f'MSL r = {corr_msl_sub:.3f}', transform=ax3.transAxes,
+#              fontsize=6, color='#8da0cb', verticalalignment='top')
+#     ax3.text(0.07, 0.85, f'ESL r = {corr_esl_sub:.3f}', transform=ax3.transAxes,
+#              fontsize=6, color='#fc8d62', verticalalignment='top')
+#     # Add title to the right bottom plot
+#     ax3.set_title('c', fontsize=8, fontweight='bold', pad=10)
+#     # Adjust layout and save
+#     plt.tight_layout()
+#     OUTPUT_DIR= join(CURRENT_DIR, "..", "data", "final_dataset_analysis","similarity_leakage.pdf")
+#     plt.savefig(OUTPUT_DIR, dpi=600, bbox_inches='tight')
+#     plt.show()
+
 def plot_leakage(df_results):
     plt.style.use('default')
     mpl.rcParams['font.family'] = 'Arial'
@@ -1146,114 +1271,165 @@ def plot_leakage(df_results):
     mpl.rcParams['savefig.dpi'] = 600
     mpl.rcParams['savefig.bbox'] = 'tight'
     mpl.rcParams['savefig.pad_inches'] = 0.1
+
     # Create a 2x2 grid with the top plot spanning both columns
     fig = plt.figure(figsize=(7.0, 8.0))
     gs = fig.add_gridspec(2, 2, height_ratios=[1.2, 1], hspace=0.4, wspace=0.3)
+
     # Top plot: Grouped bar chart (spans both columns)
     ax1 = fig.add_subplot(gs[0, :])
-    # Prepare data for grouped bars
+
+    # Prepare data for grouped bars - now with 3 categories
     split_methods = df_results['Split method']
-    categories = ['MSL', 'ESL']
-    values = df_results[['train_test_smiles_leakage', 'train_test_protein_leakage']].values.T
-    # Create grouped bars
+    categories = ['MSL', 'ESL', 'TSL']
+    values = df_results[['train_test_smiles_leakage', 'train_test_protein_leakage', 'train_test_TSL']].values.T
+
+    # Create grouped bars with 3 bars per group
     x = range(len(split_methods))
-    width = 0.3
-    colors = ['#8da0cb', '#fc8d62']
-    bars1 = ax1.bar([i - width/2 for i in x], values[0], width, color=colors[0],
-                   label='MSL', alpha=0.8, edgecolor='black', linewidth=0.5)
-    bars2 = ax1.bar([i + width/2 for i in x], values[1], width, color=colors[1],
-                   label='ESL', alpha=0.8, edgecolor='black', linewidth=0.5)
+    width = 0.25  # Slightly narrower to accommodate 3 bars
+    colors = ['#8da0cb', '#fc8d62', '#66c2a5']  # Added a third color for TSL
+
+    bars1 = ax1.bar([i - width for i in x], values[0], width, color=colors[0],
+                    label='MSL', alpha=0.8, edgecolor='black', linewidth=0.5)
+    bars2 = ax1.bar(x, values[1], width, color=colors[1],
+                    label='ESL', alpha=0.8, edgecolor='black', linewidth=0.5)
+    bars3 = ax1.bar([i + width for i in x], values[2], width, color=colors[2],
+                    label='TSL', alpha=0.8, edgecolor='black', linewidth=0.5)
+
     # Customize top plot
     ax1.set_xlabel('Split Method')
     ax1.set_ylabel('Leakage Score')
     ax1.set_xticks(x)
     ax1.set_xticklabels(split_methods)
-    ax1.set_ylim(0, 0.55)
-    ax1.set_yticks(np.arange(0, 0.6, 0.1))
+    ax1.set_ylim(0, 0.8)  # Adjusted ylim to accommodate higher TSL values
+    ax1.set_yticks(np.arange(0, 0.9, 0.1))
     ax1.tick_params(axis='both', which='major', labelsize=6)
+
     # Add legend
     ax1.legend(loc='upper left', fontsize=7, frameon=True,
-              fancybox=False, edgecolor='black', framealpha=0.9)
+               fancybox=False, edgecolor='black', framealpha=0.9)
+
     # Remove top and right spines
     ax1.spines['top'].set_visible(False)
     ax1.spines['right'].set_visible(False)
+
     # Add grid
     ax1.grid(True, linestyle=':', alpha=0.3)
+
     # Add value labels on bars
-    for bars in [bars1, bars2]:
+    for bars in [bars1, bars2, bars3]:
         for bar in bars:
             height = bar.get_height()
-            ax1.text(bar.get_x() + bar.get_width()/2., height + 0.01,
-                    f'{height:.3f}', ha='center', va='bottom', fontsize=7, fontweight='bold')
+            ax1.text(bar.get_x() + bar.get_width() / 2., height + 0.01,
+                     f'{height:.3f}', ha='center', va='bottom', fontsize=7, fontweight='bold')
+
     # Add title to the top plot
     ax1.set_title('a', fontsize=8, fontweight='bold', pad=10)
+
     # Left bottom plot: Correlation with AUROC_Inter
     ax2 = fig.add_subplot(gs[1, 0])
-    # Plot correlation with AUROC_Inter (without individual legends)
+
+    # Plot correlation with AUROC_Inter - now with 3 scatter types
     ax2.scatter(df_results['train_test_smiles_leakage'], df_results['AUROC_Inter'],
-               color='#8da0cb', s=60, alpha=0.8, edgecolor='black', linewidth=0.5, label='MSL')
+                color='#8da0cb', s=60, alpha=0.8, edgecolor='black', linewidth=0.5, label='MSL')
     ax2.scatter(df_results['train_test_protein_leakage'], df_results['AUROC_Inter'],
-               color='#fc8d62', s=60, alpha=0.8, edgecolor='black', linewidth=0.5, label='ESL')
-    # Add regression lines
+                color='#fc8d62', s=60, alpha=0.8, edgecolor='black', linewidth=0.5, label='ESL')
+    ax2.scatter(df_results['train_test_TSL'], df_results['AUROC_Inter'],
+                color='#66c2a5', s=60, alpha=0.8, edgecolor='black', linewidth=0.5, label='TSL')
+
+    # Add regression lines for all three
     z1 = np.polyfit(df_results['train_test_smiles_leakage'], df_results['AUROC_Inter'], 1)
     p1 = np.poly1d(z1)
     ax2.plot(df_results['train_test_smiles_leakage'], p1(df_results['train_test_smiles_leakage']),
-            color='#8da0cb', linestyle='--', alpha=0.7, linewidth=1)
+             color='#8da0cb', linestyle='--', alpha=0.7, linewidth=1)
+
     z2 = np.polyfit(df_results['train_test_protein_leakage'], df_results['AUROC_Inter'], 1)
     p2 = np.poly1d(z2)
     ax2.plot(df_results['train_test_protein_leakage'], p2(df_results['train_test_protein_leakage']),
-            color='#fc8d62', linestyle='--', alpha=0.7, linewidth=1)
+             color='#fc8d62', linestyle='--', alpha=0.7, linewidth=1)
+
+    z3 = np.polyfit(df_results['train_test_TSL'], df_results['AUROC_Inter'], 1)
+    p3 = np.poly1d(z3)
+    ax2.plot(df_results['train_test_TSL'], p3(df_results['train_test_TSL']),
+             color='#66c2a5', linestyle='--', alpha=0.7, linewidth=1)
+
     # Customize middle plot
     ax2.set_xlabel('Leakage Score')
     ax2.set_ylabel('AUROC')
     ax2.grid(True, linestyle=':', alpha=0.3)
+
     # Remove top and right spines
     ax2.spines['top'].set_visible(False)
     ax2.spines['right'].set_visible(False)
-    # Add correlation coefficient annotations
+
+    # Add correlation coefficient annotations for all three
     corr_msl_inter = df_results['train_test_smiles_leakage'].corr(df_results['AUROC_Inter'])
     corr_esl_inter = df_results['train_test_protein_leakage'].corr(df_results['AUROC_Inter'])
+    corr_tsl_inter = df_results['train_test_TSL'].corr(df_results['AUROC_Inter'])
+
     ax2.text(0.07, 0.95, f'MSL r = {corr_msl_inter:.3f}', transform=ax2.transAxes,
              fontsize=6, color='#8da0cb', verticalalignment='top')
     ax2.text(0.07, 0.85, f'ESL r = {corr_esl_inter:.3f}', transform=ax2.transAxes,
              fontsize=6, color='#fc8d62', verticalalignment='top')
+    ax2.text(0.07, 0.75, f'TSL r = {corr_tsl_inter:.3f}', transform=ax2.transAxes,
+             fontsize=6, color='#66c2a5', verticalalignment='top')
+
     # Add title to the left bottom plot
     ax2.set_title('b', fontsize=8, fontweight='bold', pad=10)
+
     # Right bottom plot: Correlation with AUROC_Sub
     ax3 = fig.add_subplot(gs[1, 1])
-    # Plot correlation with AUROC_Sub (without individual legends)
+
+    # Plot correlation with AUROC_Sub - now with 3 scatter types
     ax3.scatter(df_results['train_test_smiles_leakage'], df_results['AUROC_Sub'],
-               color='#8da0cb', s=60, alpha=0.8, edgecolor='black', linewidth=0.5, label='MSL')
+                color='#8da0cb', s=60, alpha=0.8, edgecolor='black', linewidth=0.5, label='MSL')
     ax3.scatter(df_results['train_test_protein_leakage'], df_results['AUROC_Sub'],
-               color='#fc8d62', s=60, alpha=0.8, edgecolor='black', linewidth=0.5, label='ESL')
-    # Add regression lines
+                color='#fc8d62', s=60, alpha=0.8, edgecolor='black', linewidth=0.5, label='ESL')
+    ax3.scatter(df_results['train_test_TSL'], df_results['AUROC_Sub'],
+                color='#66c2a5', s=60, alpha=0.8, edgecolor='black', linewidth=0.5, label='TSL')
+
+    # Add regression lines for all three
     z1_sub = np.polyfit(df_results['train_test_smiles_leakage'], df_results['AUROC_Sub'], 1)
     p1_sub = np.poly1d(z1_sub)
     ax3.plot(df_results['train_test_smiles_leakage'], p1_sub(df_results['train_test_smiles_leakage']),
-            color='#8da0cb', linestyle='--', alpha=0.7, linewidth=1)
+             color='#8da0cb', linestyle='--', alpha=0.7, linewidth=1)
+
     z2_sub = np.polyfit(df_results['train_test_protein_leakage'], df_results['AUROC_Sub'], 1)
     p2_sub = np.poly1d(z2_sub)
     ax3.plot(df_results['train_test_protein_leakage'], p2_sub(df_results['train_test_protein_leakage']),
-            color='#fc8d62', linestyle='--', alpha=0.7, linewidth=1)
+             color='#fc8d62', linestyle='--', alpha=0.7, linewidth=1)
+
+    z3_sub = np.polyfit(df_results['train_test_TSL'], df_results['AUROC_Sub'], 1)
+    p3_sub = np.poly1d(z3_sub)
+    ax3.plot(df_results['train_test_TSL'], p3_sub(df_results['train_test_TSL']),
+             color='#66c2a5', linestyle='--', alpha=0.7, linewidth=1)
+
     # Customize bottom plot
     ax3.set_xlabel('Leakage Score')
-    # ax3.set_ylabel('AUROC (Substrate)')
     ax3.grid(True, linestyle=':', alpha=0.3)
+
     # Remove top and right spines
     ax3.spines['top'].set_visible(False)
     ax3.spines['right'].set_visible(False)
-    # Add correlation coefficient annotations
+
+    # Add correlation coefficient annotations for all three
     corr_msl_sub = df_results['train_test_smiles_leakage'].corr(df_results['AUROC_Sub'])
     corr_esl_sub = df_results['train_test_protein_leakage'].corr(df_results['AUROC_Sub'])
+    corr_tsl_sub = df_results['train_test_TSL'].corr(df_results['AUROC_Sub'])
+
     ax3.text(0.07, 0.95, f'MSL r = {corr_msl_sub:.3f}', transform=ax3.transAxes,
              fontsize=6, color='#8da0cb', verticalalignment='top')
     ax3.text(0.07, 0.85, f'ESL r = {corr_esl_sub:.3f}', transform=ax3.transAxes,
              fontsize=6, color='#fc8d62', verticalalignment='top')
+    ax3.text(0.07, 0.75, f'TSL r = {corr_tsl_sub:.3f}', transform=ax3.transAxes,
+             fontsize=6, color='#66c2a5', verticalalignment='top')
+
     # Add title to the right bottom plot
     ax3.set_title('c', fontsize=8, fontweight='bold', pad=10)
+
     # Adjust layout and save
     plt.tight_layout()
-    OUTPUT_DIR= join(CURRENT_DIR, "..", "data", "final_dataset_analysis","similarity_leakage.pdf")
+    OUTPUT_DIR = join(CURRENT_DIR, "..", "data", "final_dataset_analysis", "similarity_leakage.pdf")
     plt.savefig(OUTPUT_DIR, dpi=600, bbox_inches='tight')
     plt.show()
 

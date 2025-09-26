@@ -16,14 +16,14 @@ R_params = {
     "training": {"batch_size": 64, "initial_lr": 1e-6, "weight_decay": 4e-3, "max_epochs": 100},
     "loss": {"reduction": "mean",
              "interaction_gamma": 3.0, "subclass_gamma": 2.0,
-             "interaction_alpha": 0.3, "subclass_alpha": 0.3}
+             "interaction_alpha": 0.5, "subclass_alpha": 0.5}
 }
 
 C1f_params = {
     "training": {"batch_size": 64, "initial_lr": 1e-6, "weight_decay": 4e-3, "max_epochs": 100},
     "loss": {"reduction": "mean",
              "interaction_gamma": 3.0, "subclass_gamma": 2.0,
-             "interaction_alpha": 0.3, "subclass_alpha": 0.3}
+             "interaction_alpha": 0.5, "subclass_alpha": 0.5}
 }
 
 C1e_params = {
