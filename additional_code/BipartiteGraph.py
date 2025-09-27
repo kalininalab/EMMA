@@ -195,13 +195,13 @@ def plot_betweenness_degrees(path, metric=None):
     OUTPUT_DIR = path
 
     # Define splits - now with 4 splits
-    splits = [("C1f", "enzyme-based"), ("C1e", "small molecule-based"), ("C1", "Label-based"),
+    splits = [("R", "Random"), ("C1f", "enzyme-based"), ("C1e", "small molecule-based"), ("C1", "Label-based"),
               ("C2", "two-dimensional")]
     colors = {'Enzyme': '#fc8d62', 'Small molecule': '#8da0cb'}
 
     # Create a single comprehensive figure with 4 rows and 4 columns
-    fig = plt.figure(figsize=(10, 10))  # Increased height to accommodate 4 rows
-    gs = GridSpec(4, 4, figure=fig, height_ratios=[1, 1, 1, 1], hspace=0.4, wspace=0.35)
+    fig = plt.figure(figsize=(10, 12))  # Increased height to accommodate 4 rows
+    gs = GridSpec(5, 4, figure=fig, height_ratios=[1, 1, 1, 1, 1], hspace=0.4, wspace=0.35)
 
     # Store all data for consistent axis limits
     all_values = []
@@ -275,7 +275,7 @@ def plot_betweenness_degrees(path, metric=None):
         ax_kde_train.set_xlim(global_x_min, None)
 
         # Only show x label for bottom row (row 3)
-        if row == 3:
+        if row == 5:
             if metric == 'Betweenness':
                 ax_kde_train.set_xlabel(f'BC score (log + 1 scaled)')
             else:
@@ -301,7 +301,7 @@ def plot_betweenness_degrees(path, metric=None):
         ax_kde_test.set_xlim(global_x_min, None)
 
         # Only show x label for bottom row (row 3)
-        if row == 3:
+        if row == 5:
             if metric == 'Betweenness':
                 ax_kde_test.set_xlabel(f'BC score (log + 1 scaled)')
             else:
@@ -371,7 +371,8 @@ def plot_betweenness_degrees(path, metric=None):
         row += 1
 
     # Add panel labels - now with 16 panels (4 rows × 4 columns)
-    panel_labels = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p']
+    # Add panel labels - now with 20 panels (5 rows × 4 columns)
+    panel_labels = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't']
     axes = fig.get_axes()
     for i, ax in enumerate(axes):
         # Position labels differently for KDE and box plots
