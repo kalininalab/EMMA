@@ -4,6 +4,9 @@ import sys
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import matthews_corrcoef
 import numpy as np
+import os
+from os.path import join
+current_dir = os.path.dirname(os.path.abspath(__file__))
 
 # Binding == 0: inhibitor
 # Binding == 1: substrate
@@ -40,22 +43,26 @@ def rf_split(split, seed, n_jobs=None):
         train = pickle.load(f)
     with open(f"../data/splits/test_{split}_2S.pkl", "rb") as f:
         test = pickle.load(f)
-    
+
     (train_inter_X, train_inter_y), (train_sub_X, train_sub_y) = prep_df(train)
     (test_inter_X, test_inter_y), (test_sub_X, test_sub_y) = prep_df(test)
-
-    print("Training RF on interaction data           ")
+    print("Training RF on interaction data")
     inter_rf = RandomForestClassifier(n_estimators=100, random_state=seed, n_jobs=n_jobs)
     inter_rf.fit(train_inter_X, train_inter_y)
-    inter_pred = inter_rf.predict(test_inter_X)
-    
-    print("\nTraining RF on subclass data            ")
+    # inter_pred = inter_rf.predict(test_inter_X)
+    inter_pred = inter_rf.predict_proba(test_inter_X)[:, 1]
+
+    print("\nTraining RF on subclass data")
     sub_rf = RandomForestClassifier(n_estimators=100, random_state=seed, n_jobs=n_jobs)
     sub_rf.fit(train_sub_X, train_sub_y)
-    sub_pred = sub_rf.predict(test_sub_X)
-    
-    with open(f"rf_{split}_{seed}_preds.pkl", "wb") as f:
-        pickle.dump((inter_pred, sub_pred), f)
+    # sub_pred = sub_rf.predict(test_sub_X)
+    sub_pred = sub_rf.predict_proba(test_sub_X)[:, 1]
+    results_path=join(current_dir,"..","data", "training_test_results","Random_Forest")
+    os.makedirs(results_path, exist_ok=True)
+    np.save(join(results_path, f"interaction_y_test_pred_{split}_RS{seed}.npy"), inter_pred)
+    np.save(join(results_path, f"interaction_y_test_true_{split}_RS{seed}.npy"), test_inter_y)
+    np.save(join(results_path, f"subclass_y_test_pred_{split}_RS{seed}.npy"), sub_pred)
+    np.save(join(results_path, f"subclass_y_test_true_{split}_RS{seed}.npy"), test_sub_y)
 
 
 if __name__ == "__main__":

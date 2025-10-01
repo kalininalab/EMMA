@@ -1042,7 +1042,7 @@ def molecule_distribution(df_original, df_downsampled, title_prefix=""):
     }).round(2))
 
 
-def calculate_metrics(inter_y_true, inter_y_pred, sub_y_true, sub_y_pred):
+def calculate_metrics_emma(inter_y_true, inter_y_pred, sub_y_true, sub_y_pred):
     """Calculate metrics for both heads for a single seed"""
     metrics = {}
     # Interaction head (binary classification)
@@ -1061,6 +1061,23 @@ def calculate_metrics(inter_y_true, inter_y_pred, sub_y_true, sub_y_pred):
                 sub_y_true[interacting_mask], sub_pred_class)
             metrics['sub_auroc'] = roc_auc_score(
                 sub_y_true[interacting_mask], sub_y_pred[interacting_mask])
+    return metrics
+
+
+def calculate_metrics_rf(inter_y_true, inter_y_pred, sub_y_true, sub_y_pred):
+    """Calculate metrics for both heads for a single seed"""
+    metrics = {}
+    # Interaction head (binary classification)
+    inter_pred_class = (inter_y_pred >= 0.5).astype(int)
+    metrics['inter_accuracy'] = accuracy_score(inter_y_true, inter_pred_class)
+    metrics['inter_f1'] = f1_score(inter_y_true, inter_pred_class)
+    metrics['inter_auroc'] = roc_auc_score(inter_y_true, inter_y_pred)
+    # Subclass head (only on interacting pairs)
+    sub_pred_class = (sub_y_pred >= 0.5).astype(int)
+    metrics['sub_accuracy'] = accuracy_score(sub_y_true, sub_pred_class)
+    metrics['sub_f1'] = f1_score(sub_y_true, sub_pred_class)
+    metrics['sub_auroc'] = roc_auc_score(sub_y_true, sub_y_pred)
+
     return metrics
 
 
@@ -1084,7 +1101,11 @@ def aggregate_results(split_methods, seeds, data_dir):
                 sub_true = np.load(join(data_dir, f"subclass_y_test_true_{split}_RS{seed}.npy"))
                 sub_pred = np.load(join(data_dir, f"subclass_y_test_pred_{split}_RS{seed}.npy"))
                 # Calculate metrics
-                metrics = calculate_metrics(inter_true, inter_pred, sub_true, sub_pred)
+                folder = data_dir.split("/")[-1]
+                if folder == "Random_Forest":
+                    metrics = calculate_metrics_rf(inter_true, inter_pred, sub_true, sub_pred)
+                else:
+                    metrics = calculate_metrics_emma(inter_true, inter_pred, sub_true, sub_pred)
                 # Store results
                 for key in split_results:
                     if key in metrics:

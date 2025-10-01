@@ -124,17 +124,17 @@ This table outlines an overview of all different split strategies used in this p
 - **Enz–NI:** Enzyme–non-interacting  
 * DataSAIL can split data in 1 and 2 dimensions (1D, 2D). The 1D splits are [S1ₗ (or C1e), S1ₚ (or C1f), I1ₗ (or I1e), I1ₚ (or I1f)] and the 2D splits are S2 (or C2) and I2. For more information please check the DataSAIL's [documentation](https://datasail.readthedocs.io/en/latest/index.html).
 * In this project we refer to the split method that was used in the ESP paper as ESP split.
-### 14-1-SplitByDataSAIL.py:
+### 14-1-Splitting.py:
 * This script aims to split the dataESP by DataSAIL and generate negative data for each split.
 
 
 
-        python 14-1-SplitByDataSAIL.py --split-method C2 --split-size 8 2 --strat True --input-path ./../data/processed_data/Final_Dataset.pkl --output-path ./../data/splits --epsilon-value 0.01 --delta-value 0.01
-        python 14-1-SplitByDataSAIL.py --split-method C1f --split-size 8 2 --strat True --input-path ./../data/processed_data/Final_Dataset.pkl --output-path ./../data/splits --epsilon-value 0.01 --delta-value 0.01
-        python 14-1-SplitByDataSAIL.py --split-method C1e --split-size 8 2 --strat True --input-path ./../data/processed_data/Final_Dataset.pkl --output-path ./../data/splits --epsilon-value 0.003 --delta-value 0.003
+        python 14-1-Splitting.py --split-method C2 --split-size 8 2 --strat True --input-path ./../data/processed_data/Final_Dataset.pkl --output-path ./../data/splits --epsilon-value 0.01 --delta-value 0.01
+        python 14-1-Splitting.py --split-method C1f --split-size 8 2 --strat True --input-path ./../data/processed_data/Final_Dataset.pkl --output-path ./../data/splits --epsilon-value 0.01 --delta-value 0.01
+        python 14-1-Splitting.py --split-method C1e --split-size 8 2 --strat True --input-path ./../data/processed_data/Final_Dataset.pkl --output-path ./../data/splits --epsilon-value 0.003 --delta-value 0.003
 
-### 14-2-SplitByDataSAIL_LabelBased.py:
-        python 14-2-SplitByDataSAIL_LabelBased.py --split-method C1 --split-size 8 2 --strat True --input-path ./../data/processed_data/Final_Dataset.pkl --output-path ./../data/splits --epsilon-value 0.01 --delta-value 0.01
+### 14-2-Splitting_LabelBased.py:
+        python 14-2-Splitting_LabelBased.py --split-method C1 --split-size 8 2 --strat True --input-path ./../data/processed_data/Final_Dataset.pkl --output-path ./../data/splits --epsilon-value 0.01 --delta-value 0.01
 
 ## Map Embedding To Splits
 ### 15-MapEmbeddingsOutputsToIDs.py:
