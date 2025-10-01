@@ -8,7 +8,16 @@ from matplotlib.gridspec import GridSpec
 import numpy as np
 
 
-def plot_binding_distribution(final_dataset, final_dataset_BC, output_path):
+def plot_binding_distribution(final_dataset, final_dataset_BC, degrees, output_path):
+    """
+    Plot binding distribution with median degree (MD) and median betweenness centrality (MBC)
+
+    Parameters:
+    final_dataset: DataFrame with binding information
+    final_dataset_BC: DataFrame with betweenness centrality values
+    degrees: Dictionary of node degrees from calculate_nodes_degrees
+    output_path: Path to save the output plot
+    """
 
     plt.style.use('default')
     plt.rcParams.update({
@@ -35,7 +44,7 @@ def plot_binding_distribution(final_dataset, final_dataset_BC, output_path):
 
     # ==============================================
 
-    # For enzyme diagram - convert to strings (FIXED THE SYNTAX ERROR HERE)
+    # For enzyme diagram - convert to strings
     enzyme_non_substrate = set(df[df["Binding"] == 2]["Uni_SwissProt"].astype(str).unique())
     enzyme_substrate = set(df[df["Binding"] == 1]["Uni_SwissProt"].astype(str).unique())
     enzyme_inhibitor = set(df[df["Binding"] == 0]["Uni_SwissProt"].astype(str).unique())
@@ -47,66 +56,75 @@ def plot_binding_distribution(final_dataset, final_dataset_BC, output_path):
 
     # ==============================================
 
-    def calculate_average_betweenness(nodes_set, df_betwns, node_type):
+    def calculate_median_metrics(nodes_set, df_betwns, node_type, degrees_dict):
         """
-        Calculate average betweenness for a set of nodes
+        Calculate median betweenness and median degree for a set of nodes
         """
         # Filter by node type (case-insensitive)
         type_filtered = df_betwns[df_betwns["Type"].str.lower() == node_type.lower()]
 
         if type_filtered.empty:
-            return 0, 0
+            return 0, 0, 0, 0
 
         # Use merge for faster matching
         nodes_df = pd.DataFrame({'Node': list(nodes_set)})
         merged = pd.merge(nodes_df, type_filtered, on='Node', how='inner')
 
         if not merged.empty:
+            # Calculate median betweenness
             betweenness_values = merged['Betweenness'].tolist()
-            avg_bet = np.mean(betweenness_values)
-            return avg_bet, len(betweenness_values)
+            median_bet = np.median(betweenness_values)
+
+            # Calculate median degree
+            degree_values = []
+            for node in nodes_set:
+                if node in degrees_dict:
+                    degree_values.append(degrees_dict[node])
+
+            median_deg = np.median(degree_values) if degree_values else 0
+
+            return median_bet, median_deg, len(betweenness_values), len(degree_values)
         else:
-            return 0, 0
+            return 0, 0, 0, 0
 
     # ==============================================
 
-    # Calculate average betweenness for all enzyme subsets
+    # Calculate median metrics for all enzyme subsets
     enzyme_subsets = {
-        'non_substrate_only': enzyme_non_substrate - enzyme_substrate - enzyme_inhibitor,
-        'substrate_only': enzyme_substrate - enzyme_non_substrate - enzyme_inhibitor,
-        'inhibitor_only': enzyme_inhibitor - enzyme_non_substrate - enzyme_substrate,
+        'non-interacting': enzyme_non_substrate - enzyme_substrate - enzyme_inhibitor,
+        'substrate': enzyme_substrate - enzyme_non_substrate - enzyme_inhibitor,
+        'inhibitor': enzyme_inhibitor - enzyme_non_substrate - enzyme_substrate,
         'substrate_inhibitor': (enzyme_substrate & enzyme_inhibitor) - enzyme_non_substrate,
-        'non_substrate_substrate': (enzyme_non_substrate & enzyme_substrate) - enzyme_inhibitor,
-        'non_substrate_inhibitor': (enzyme_non_substrate & enzyme_inhibitor) - enzyme_substrate,
+        'non-interacting_substrate': (enzyme_non_substrate & enzyme_substrate) - enzyme_inhibitor,
+        'non-interacting_inhibitor': (enzyme_non_substrate & enzyme_inhibitor) - enzyme_substrate,
         'all_three': enzyme_non_substrate & enzyme_substrate & enzyme_inhibitor
     }
 
-    enzyme_betweenness = {}
+    enzyme_metrics = {}
     for subset_name, subset_nodes in enzyme_subsets.items():
         if subset_nodes:  # Only calculate if there are nodes
-            avg_bet, count = calculate_average_betweenness(subset_nodes, df_betwns, 'enzyme')
-            enzyme_betweenness[subset_name] = (avg_bet, count, len(subset_nodes))
+            median_bet, median_deg, bet_count, deg_count = calculate_median_metrics(
+                subset_nodes, df_betwns, 'enzyme', degrees)
+            enzyme_metrics[subset_name] = (median_bet, median_deg, bet_count, deg_count, len(subset_nodes))
 
-    # Calculate average betweenness for all molecule subsets
+    # Calculate median metrics for all molecule subsets
     molecule_subsets = {
-        'non_substrate_only': mol_non_substrate - mol_substrate - mol_inhibitor,
-        'substrate_only': mol_substrate - mol_non_substrate - mol_inhibitor,
-        'inhibitor_only': mol_inhibitor - mol_non_substrate - mol_substrate,
+        'non-interacting': mol_non_substrate - mol_substrate - mol_inhibitor,
+        'substrate': mol_substrate - mol_non_substrate - mol_inhibitor,
+        'inhibitor': mol_inhibitor - mol_non_substrate - mol_substrate,
         'substrate_inhibitor': (mol_substrate & mol_inhibitor) - mol_non_substrate,
-        'non_substrate_substrate': (mol_non_substrate & mol_substrate) - mol_inhibitor,
-        'non_substrate_inhibitor': (mol_non_substrate & mol_inhibitor) - mol_substrate,
+        'non-interacting_substrate': (mol_non_substrate & mol_substrate) - mol_inhibitor,
+        'non-interacting_inhibitor': (mol_non_substrate & mol_inhibitor) - mol_substrate,
         'all_three': mol_non_substrate & mol_substrate & mol_inhibitor
     }
 
-    molecule_betweenness = {}
+    molecule_metrics = {}
     for subset_name, subset_nodes in molecule_subsets.items():
         if subset_nodes:  # Only calculate if there are nodes
-            avg_bet, count = calculate_average_betweenness(subset_nodes, df_betwns, 'molecule')
-            molecule_betweenness[subset_name] = (avg_bet, count, len(subset_nodes))
+            median_bet, median_deg, bet_count, deg_count = calculate_median_metrics(
+                subset_nodes, df_betwns, 'molecule', degrees)
+            molecule_metrics[subset_name] = (median_bet, median_deg, bet_count, deg_count, len(subset_nodes))
 
-    # # Print results for verification
-    # print("Enzyme betweenness results:", enzyme_betweenness)
-    # print("Molecule betweenness results:", molecule_betweenness)
     # ==============================================
 
     # Set up the figure with larger size to accommodate annotations
@@ -136,7 +154,7 @@ def plot_binding_distribution(final_dataset, final_dataset_BC, output_path):
     )
     ax1.set_title('a', fontsize=20, pad=70, fontweight='bold')
 
-    # Get the positions of the existing count labels and add betweenness below them
+    # Add annotations for MBC and MD
     for label in venn_enzyme.subset_labels:
         if label is not None:
             # Get the position of the count label
@@ -146,34 +164,29 @@ def plot_binding_distribution(final_dataset, final_dataset_BC, output_path):
             # Find which subset this label corresponds to
             subset_name = None
             if count_text == str(len(enzyme_non_substrate - enzyme_substrate - enzyme_inhibitor)):
-                subset_name = 'non_substrate_only'
+                subset_name = 'non-interacting'
             elif count_text == str(len(enzyme_substrate - enzyme_non_substrate - enzyme_inhibitor)):
-                subset_name = 'substrate_only'
+                subset_name = 'substrate'
             elif count_text == str(len(enzyme_inhibitor - enzyme_non_substrate - enzyme_substrate)):
-                subset_name = 'inhibitor_only'
+                subset_name = 'inhibitor'
             elif count_text == str(len((enzyme_substrate & enzyme_inhibitor) - enzyme_non_substrate)):
                 subset_name = 'substrate_inhibitor'
             elif count_text == str(len((enzyme_non_substrate & enzyme_substrate) - enzyme_inhibitor)):
-                subset_name = 'non_substrate_substrate'
+                subset_name = 'non-interacting_substrate'
             elif count_text == str(len((enzyme_non_substrate & enzyme_inhibitor) - enzyme_substrate)):
-                subset_name = 'non_substrate_inhibitor'
+                subset_name = 'non-interacting_inhibitor'
             elif count_text == str(len(enzyme_non_substrate & enzyme_substrate & enzyme_inhibitor)):
                 subset_name = 'all_three'
 
-            # Add betweenness annotation below the count
-            if subset_name and subset_name in enzyme_betweenness and enzyme_betweenness[subset_name][1] > 0:
-                avg_bet, count, total_count = enzyme_betweenness[subset_name]
-                annotation_text = f"ABC: {avg_bet:.3f}"
+            # Add MBC and MD annotations below the count
+            if subset_name and subset_name in enzyme_metrics and enzyme_metrics[subset_name][2] > 0:
+                median_bet, median_deg, bet_count, deg_count, total_count = enzyme_metrics[subset_name]
+                annotation_text = f"MBC: {median_bet:.1f}\nMD: {median_deg:.1f}"
                 ax1.annotate(annotation_text,
-                             xy=(pos[0], pos[1] - 0.02),  # Position slightly below the count
+                             xy=(pos[0], pos[1] - 0.03),  # Position slightly below the count
                              xycoords='data',
-                             ha='center', va='top', fontsize=11,
+                             ha='center', va='top', fontsize=10,
                              bbox=dict(boxstyle="round,pad=0.3", fc="lightyellow", alpha=0.8))
-
-    # # Add total count
-    # total_enzymes = len(enzyme_non_substrate | enzyme_substrate | enzyme_inhibitor)
-    # ax1.text(0.02, 0.02, f'Total: {total_enzymes}', transform=ax1.transAxes, fontsize=12,
-    #          bbox=dict(boxstyle="round", fc="white", alpha=0.8))
 
     # ========== Molecule Plot ==========
     ax2 = fig.add_subplot(gs[0, 1])
@@ -192,7 +205,7 @@ def plot_binding_distribution(final_dataset, final_dataset_BC, output_path):
     )
     ax2.set_title('b', fontsize=20, pad=20, fontweight='bold')
 
-    # Add betweenness annotations for molecule plot - positioned below the count numbers
+    # Add MBC and MD annotations for molecule plot
     for label in venn_molecule.subset_labels:
         if label is not None:
             # Get the position of the count label
@@ -202,50 +215,32 @@ def plot_binding_distribution(final_dataset, final_dataset_BC, output_path):
             # Find which subset this label corresponds to
             subset_name = None
             if count_text == str(len(mol_non_substrate - mol_substrate - mol_inhibitor)):
-                subset_name = 'non_substrate_only'
+                subset_name = 'non-interacting'
             elif count_text == str(len(mol_substrate - mol_non_substrate - mol_inhibitor)):
-                subset_name = 'substrate_only'
+                subset_name = 'substrate'
             elif count_text == str(len(mol_inhibitor - mol_non_substrate - mol_substrate)):
-                subset_name = 'inhibitor_only'
+                subset_name = 'inhibitor'
             elif count_text == str(len((mol_substrate & mol_inhibitor) - mol_non_substrate)):
                 subset_name = 'substrate_inhibitor'
             elif count_text == str(len((mol_non_substrate & mol_substrate) - mol_inhibitor)):
-                subset_name = 'non_substrate_substrate'
+                subset_name = 'non-interacting_substrate'
             elif count_text == str(len((mol_non_substrate & mol_inhibitor) - mol_substrate)):
-                subset_name = 'non_substrate_inhibitor'
+                subset_name = 'non-interacting_inhibitor'
             elif count_text == str(len(mol_non_substrate & mol_substrate & mol_inhibitor)):
                 subset_name = 'all_three'
 
-            # Add betweenness annotation below the count
-            if subset_name and subset_name in molecule_betweenness and molecule_betweenness[subset_name][1] > 0:
-                avg_bet, count, total_count = molecule_betweenness[subset_name]
-                annotation_text = f"ABC: {avg_bet:.3f}"
+            # Add MBC and MD annotations below the count
+            if subset_name and subset_name in molecule_metrics and molecule_metrics[subset_name][2] > 0:
+                median_bet, median_deg, bet_count, deg_count, total_count = molecule_metrics[subset_name]
+                annotation_text = f"MBC: {median_bet:.1f}\nMD: {median_deg:.1f}"
                 ax2.annotate(annotation_text,
-                             xy=(pos[0], pos[1] - 0.02),  # Position slightly below the count
+                             xy=(pos[0], pos[1] - 0.03),  # Position slightly below the count
                              xycoords='data',
-                             ha='center', va='top', fontsize=11,
+                             ha='center', va='top', fontsize=12,
                              bbox=dict(boxstyle="round,pad=0.3", fc="lightyellow", alpha=0.8))
-
-    # Add total count
-    # total_molecules = len(mol_non_substrate | mol_substrate | mol_inhibitor)
-    # ax2.text(0.02, 0.02, f'Total: {total_molecules}', transform=ax2.transAxes, fontsize=12,
-    #          bbox=dict(boxstyle="round", fc="white", alpha=0.8))
 
     plt.tight_layout()
     plt.savefig(output_path, dpi=600, bbox_inches='tight')
     plt.show()
 
-    print(f"Combined Venn diagram with betweenness saved to: {output_path}")
-
-    # Create a summary table
-    print("\n=== SUMMARY TABLE ===")
-    print(f"{'Subset':<25} {'Avg BC':<15} {'Nodes with Data':<15} {'Total Nodes':<15}")
-    print("-" * 70)
-
-    print("\nENZYMES:")
-    for subset, (avg_bet, count, total) in enzyme_betweenness.items():
-        print(f"{subset:<25} {avg_bet:<15.3f} {count:<15} {total:<15}")
-
-    print("\nMOLECULES:")
-    for subset, (avg_bet, count, total) in molecule_betweenness.items():
-        print(f"{subset:<25} {avg_bet:<15.3f} {count:<15} {total:<15}")
+    print(f"Combined Venn diagram with MBC and MD saved to: {output_path}")

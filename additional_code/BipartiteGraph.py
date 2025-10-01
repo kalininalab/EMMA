@@ -225,43 +225,6 @@ def plot_betweenness_degrees(path, metric=None):
             train[metric] = np.log(train[metric])
         test['Type'] = test['Type'].replace('Molecule', 'Small molecule')
         train['Type'] = train['Type'].replace('Molecule', 'Small molecule')
-        # Get both sets of IDs
-        # multi_train_molecules = train_set.groupby("molecule_ID")['Binding'].nunique() >= 2
-        # multi_train_molecules = multi_train_molecules[multi_train_molecules].index.tolist()
-        #
-        # multi_train_enzymes = train_set.groupby("Uni_SwissProt")['Binding'].nunique() >= 2
-        # multi_train_enzymes = multi_train_enzymes[multi_train_enzymes].index.tolist()
-        #
-        # # Filter for rows where either condition is true
-        # train_set = train_set[
-        #     train_set["molecule_ID"].isin(multi_train_molecules) |
-        #     train_set["Uni_SwissProt"].isin(multi_train_enzymes)
-        #     ]
-        #
-        # multi_test_molecules = test_set.groupby("molecule_ID")['Binding'].nunique() >= 2
-        # multi_test_molecules = multi_test_molecules[multi_test_molecules].index.tolist()
-        #
-        # multi_test_enzymes = test_set.groupby("Uni_SwissProt")['Binding'].nunique() >= 2
-        # multi_test_enzymes = multi_test_enzymes[multi_test_enzymes].index.tolist()
-        #
-        # # Filter for rows where either condition is true
-        # test_set = test_set[
-        #     test_set["molecule_ID"].isin(multi_test_molecules) |
-        #     test_set["Uni_SwissProt"].isin(multi_test_enzymes)
-        #     ]
-        # mol_ids = train_set["molecule_ID"].unique().tolist()
-        # prot_ids = train_set["Uni_SwissProt"].unique().tolist()
-        # # Combine and filter
-        # combined_ids_train = mol_ids + prot_ids
-        # mol_ids_test = test_set["molecule_ID"].unique().tolist()
-        # prot_ids_test = test_set["Uni_SwissProt"].unique().tolist()
-        # # Combine and filter
-        # combined_ids_test = mol_ids_test + prot_ids_test
-        # shared = set(combined_ids_test).intersection(set(combined_ids_train))
-        #
-        # train = train[train["Node"].isin(shared)]
-        # test = test[test["Node"].isin(shared)]
-        # Store for axis limits
         all_values.extend(train[metric].tolist())
         all_values.extend(test[metric].tolist())
 
