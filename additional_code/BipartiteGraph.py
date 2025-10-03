@@ -279,7 +279,7 @@ def plot_betweenness_degrees(path, metric=None):
         ax_kde_train.set_xlim(global_x_min, None)
 
         # Only show x label for bottom row (row 3)
-        if row == 5:
+        if row == 4:
             if metric == 'Betweenness':
                 ax_kde_train.set_xlabel(f'BC score (log + 1 scaled)')
             else:
@@ -305,7 +305,7 @@ def plot_betweenness_degrees(path, metric=None):
         ax_kde_test.set_xlim(global_x_min, None)
 
         # Only show x label for bottom row (row 3)
-        if row == 5:
+        if row == 4:
             if metric == 'Betweenness':
                 ax_kde_test.set_xlabel(f'BC score (log + 1 scaled)')
             else:
@@ -506,10 +506,10 @@ def plot_binned_btweenness(results, splits, heads, bins,OUTPUT_DIR):
                 if s in results and head in results[s] and betweenness_type in results[s][head]:
                     df = results[s][head][betweenness_type]
                     if len(df) > 1:
-                        correlation, p_value = pearsonr(df['bin'], df['auroc'])
-                        correlation_data[head][betweenness_type][s[1]] = (correlation, p_value)
+                        correlation, _ = pearsonr(df['bin'], df['auroc'])
+                        correlation_data[head][betweenness_type][s[1]] = correlation
                     else:
-                        correlation_data[head][betweenness_type][s[1]] = (np.nan, np.nan)
+                        correlation_data[head][betweenness_type][s[1]] = np.nan
 
     # Plot 1: Interaction - Enzyme Betweenness
     ax1 = axes[0, 0]
@@ -518,40 +518,35 @@ def plot_binned_btweenness(results, splits, heads, bins,OUTPUT_DIR):
             df = results[s]['interaction']['Betweenness_enzyme']
             ax1.plot(df['bin'], df['auroc'], 'o-', label=s[1], linewidth=2.5, markersize=6, alpha=0.8, color=colors[i])
 
-    ax1.set_xlabel('Betweenness Bin', fontsize=12, fontweight='bold')
+    ax1.set_xlabel('Binned betweenness', fontsize=12, fontweight='bold')
     ax1.set_ylabel('AUROC', fontsize=12, fontweight='bold')
-    ax1.set_title('a.1) Interaction head - Enzyme Betweenness', fontsize=14, fontweight='bold')
+    ax1.set_title('a) Interaction head - Enzyme Betweenness', fontsize=14, fontweight='bold')
     ax1.grid(True, linestyle=':', alpha=0.3)
     ax1.set_xticks(range(1, bins + 1))
     ax1.set_ylim(0.4, 1.0)
-    # ax1.legend(bbox_to_anchor=(0.5, 1.12), loc='lower center', ncol=len(splits), frameon=True)
 
-    # Add correlation table for Interaction - Enzyme (r and p-value in rows, splits in columns)
+    # Add correlation table for Interaction - Enzyme (r only, splits in columns)
     split_names = [s[1] for s in splits]
     table_data = []
-    for metric_name in ['r', 'p-value']:
-        row_data = []
-        for split_name in split_names:
-            if split_name in correlation_data['interaction']['Betweenness_enzyme']:
-                r, p = correlation_data['interaction']['Betweenness_enzyme'][split_name]
-                if metric_name == 'r':
-                    row_data.append(f"{r:.3f}")
-                else:
-                    row_data.append(f"{p:.3f}")
-            else:
-                row_data.append("NaN")
-        table_data.append(row_data)
+    row_data = []
+    for split_name in split_names:
+        if split_name in correlation_data['interaction']['Betweenness_enzyme']:
+            r = correlation_data['interaction']['Betweenness_enzyme'][split_name]
+            row_data.append(f"{r:.3f}")
+        else:
+            row_data.append("NaN")
+    table_data.append(row_data)
 
-    table_ax1 = ax1.inset_axes([0.109, -0.35, 0.85, 0.25])
+    table_ax1 = ax1.inset_axes([0.09, -0.35, 0.85, 0.25])
     table_ax1.axis('off')
     table1 = table_ax1.table(cellText=table_data,
-                             rowLabels=['r', 'p-value'],
+                             rowLabels=[' r '],
                              colLabels=split_names,
                              loc='center',
                              cellLoc='center')
     table1.auto_set_font_size(False)
-    table1.set_fontsize(11)
-    table1.scale(1.1, 1.5)
+    table1.set_fontsize(12)
+    table1.scale(1.15, 1.5)
 
     # Plot 2: Interaction - Molecule Betweenness
     ax2 = axes[0, 1]
@@ -560,38 +555,34 @@ def plot_binned_btweenness(results, splits, heads, bins,OUTPUT_DIR):
             df = results[s]['interaction']['Betweenness_molecule']
             ax2.plot(df['bin'], df['auroc'], 'o-', label=s[1], linewidth=2.5, markersize=6, alpha=0.8, color=colors[i])
 
-    ax2.set_xlabel('Betweenness Bin', fontsize=12, fontweight='bold')
+    ax2.set_xlabel('Binned betweenness', fontsize=12, fontweight='bold')
     ax2.set_ylabel('AUROC', fontsize=12, fontweight='bold')
-    ax2.set_title('a.2) Interaction head - Molecule Betweenness', fontsize=14, fontweight='bold')
+    ax2.set_title('b) Interaction head - Molecule Betweenness', fontsize=14, fontweight='bold')
     ax2.grid(True, linestyle=':', alpha=0.3)
     ax2.set_xticks(range(1, bins + 1))
     ax2.set_ylim(0.4, 1.0)
 
-    # Add correlation table for Interaction - Molecule (r and p-value in rows, splits in columns)
+    # Add correlation table for Interaction - Molecule (r only, splits in columns)
     table_data = []
-    for metric_name in ['r', 'p-value']:
-        row_data = []
-        for split_name in split_names:
-            if split_name in correlation_data['interaction']['Betweenness_molecule']:
-                r, p = correlation_data['interaction']['Betweenness_molecule'][split_name]
-                if metric_name == 'r':
-                    row_data.append(f"{r:.3f}")
-                else:
-                    row_data.append(f"{p:.3f}")
-            else:
-                row_data.append("NaN")
-        table_data.append(row_data)
+    row_data = []
+    for split_name in split_names:
+        if split_name in correlation_data['interaction']['Betweenness_molecule']:
+            r = correlation_data['interaction']['Betweenness_molecule'][split_name]
+            row_data.append(f"{r:.3f}")
+        else:
+            row_data.append("NaN")
+    table_data.append(row_data)
 
-    table_ax2 = ax2.inset_axes([0.109, -0.35, 0.85, 0.25])
+    table_ax2 = ax2.inset_axes([0.09, -0.35, 0.85, 0.25])
     table_ax2.axis('off')
     table2 = table_ax2.table(cellText=table_data,
-                             rowLabels=['r', 'p-value'],
+                             rowLabels=[' r '],
                              colLabels=split_names,
                              loc='center',
                              cellLoc='center')
     table2.auto_set_font_size(False)
-    table2.set_fontsize(11)
-    table2.scale(1.1, 1.5)
+    table2.set_fontsize(12)
+    table2.scale(1.15, 1.5)
 
     # Plot 3: Subclass - Enzyme Betweenness
     ax3 = axes[1, 0]
@@ -600,39 +591,34 @@ def plot_binned_btweenness(results, splits, heads, bins,OUTPUT_DIR):
             df = results[s]['subclass']['Betweenness_enzyme']
             ax3.plot(df['bin'], df['auroc'], 'o-', label=s[1], linewidth=2.5, markersize=6, alpha=0.8, color=colors[i])
 
-    ax3.set_xlabel('Betweenness Bin', fontsize=12, fontweight='bold')
+    ax3.set_xlabel('Binned betweenness', fontsize=12, fontweight='bold')
     ax3.set_ylabel('AUROC', fontsize=12, fontweight='bold')
-    ax3.set_title('b.1) Subclass head - Enzyme Betweenness', fontsize=14, fontweight='bold')
+    ax3.set_title('c) Subclass head - Enzyme Betweenness', fontsize=14, fontweight='bold')
     ax3.grid(True, linestyle=':', alpha=0.3)
     ax3.set_xticks(range(1, bins + 1))
     ax3.set_ylim(0.85, 1.02)
-    # ax3.legend(bbox_to_anchor=(0.6, -0.2), loc='lower center', ncol=len(splits), frameon=True)
 
-    # Add correlation table for Subclass - Enzyme (r and p-value in rows, splits in columns)
+    # Add correlation table for Subclass - Enzyme (r only, splits in columns)
     table_data = []
-    for metric_name in ['r', 'p-value']:
-        row_data = []
-        for split_name in split_names:
-            if split_name in correlation_data['subclass']['Betweenness_enzyme']:
-                r, p = correlation_data['subclass']['Betweenness_enzyme'][split_name]
-                if metric_name == 'r':
-                    row_data.append(f"{r:.3f}")
-                else:
-                    row_data.append(f"{p:.3f}")
-            else:
-                row_data.append("NaN")
-        table_data.append(row_data)
+    row_data = []
+    for split_name in split_names:
+        if split_name in correlation_data['subclass']['Betweenness_enzyme']:
+            r = correlation_data['subclass']['Betweenness_enzyme'][split_name]
+            row_data.append(f"{r:.3f}")
+        else:
+            row_data.append("NaN")
+    table_data.append(row_data)
 
-    table_ax3 = ax3.inset_axes([0.109, -0.35, 0.85, 0.25])
+    table_ax3 = ax3.inset_axes([0.09, -0.35, 0.85, 0.25])
     table_ax3.axis('off')
     table3 = table_ax3.table(cellText=table_data,
-                             rowLabels=['r', 'p-value'],
+                             rowLabels=[' r '],
                              colLabels=split_names,
                              loc='center',
                              cellLoc='center')
     table3.auto_set_font_size(False)
-    table3.set_fontsize(11)
-    table3.scale(1.1, 1.5)
+    table3.set_fontsize(12)
+    table3.scale(1.15, 1.5)
 
     # Plot 4: Subclass - Molecule Betweenness
     ax4 = axes[1, 1]
@@ -641,38 +627,34 @@ def plot_binned_btweenness(results, splits, heads, bins,OUTPUT_DIR):
             df = results[s]['subclass']['Betweenness_molecule']
             ax4.plot(df['bin'], df['auroc'], 'o-', label=s[1], linewidth=2.5, markersize=6, alpha=0.8, color=colors[i])
 
-    ax4.set_xlabel('Betweenness Bin', fontsize=12, fontweight='bold')
+    ax4.set_xlabel('Binned betweenness', fontsize=12, fontweight='bold')
     ax4.set_ylabel('AUROC', fontsize=12, fontweight='bold')
-    ax4.set_title('b.2) Subclass head - Molecule Betweenness', fontsize=14, fontweight='bold')
+    ax4.set_title('d) Subclass head - Molecule Betweenness', fontsize=14, fontweight='bold')
     ax4.grid(True, linestyle=':', alpha=0.3)
     ax4.set_xticks(range(1, bins + 1))
     ax4.set_ylim(0.85, 1.02)
 
-    # Add correlation table for Subclass - Molecule (r and p-value in rows, splits in columns)
+    # Add correlation table for Subclass - Molecule (r only, splits in columns)
     table_data = []
-    for metric_name in ['r', 'p-value']:
-        row_data = []
-        for split_name in split_names:
-            if split_name in correlation_data['subclass']['Betweenness_molecule']:
-                r, p = correlation_data['subclass']['Betweenness_molecule'][split_name]
-                if metric_name == 'r':
-                    row_data.append(f"{r:.3f}")
-                else:
-                    row_data.append(f"{p:.3f}")
-            else:
-                row_data.append("NaN")
-        table_data.append(row_data)
+    row_data = []
+    for split_name in split_names:
+        if split_name in correlation_data['subclass']['Betweenness_molecule']:
+            r = correlation_data['subclass']['Betweenness_molecule'][split_name]
+            row_data.append(f"{r:.3f}")
+        else:
+            row_data.append("NaN")
+    table_data.append(row_data)
 
-    table_ax4 = ax4.inset_axes([0.109, -0.35, 0.85, 0.25])
+    table_ax4 = ax4.inset_axes([0.09, -0.35, 0.85, 0.25])
     table_ax4.axis('off')
     table4 = table_ax4.table(cellText=table_data,
-                             rowLabels=['r', 'p-value'],
+                             rowLabels=[' r '],
                              colLabels=split_names,
                              loc='center',
                              cellLoc='center')
     table4.auto_set_font_size(False)
-    table4.set_fontsize(11)
-    table4.scale(1.1, 1.5)
+    table4.set_fontsize(12)
+    table4.scale(1.15, 1.5)
 
     plt.tight_layout()
     fig.legend(handles=[plt.Line2D([0], [0], color=colors[i], lw=2) for i, s in enumerate(splits)],
