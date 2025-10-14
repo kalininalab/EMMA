@@ -60,7 +60,7 @@ we demonstrate that EMMA achieves strong and robust performance, particularly on
 │ └── README.md
 ```
 
-Please download raw_data and processed_data folders from [Zenodo repository](https://zenodo.org/records/17280853)
+Please download `raw_data` and `processed_data` folders from [Zenodo repository](https://zenodo.org/records/17280853)
 and place them in the correct directory as shown in the folder structure above.
 
 
