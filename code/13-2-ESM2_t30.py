@@ -53,10 +53,6 @@ def main(args):
             print(f"Processing {batch_idx + 1} of {len(batches)} batches ({toks.size(0)} sequences)")
             toks = toks[:, :max_seq_len]
             toks = toks.to(device="cuda", non_blocking=True)
-            failed_InFreeSASA = []
-            with open(join(output_path, "failed_InFreeSASA.txt"), 'w') as file:
-                for uniprot_id in failed_InFreeSASA:
-                    file.write(f'{uniprot_id}\n')
             with autocast():
                 out = model(toks, repr_layers=[30], return_contacts=False)
             representations = {layer: t.to(device="cpu") for layer, t in out["representations"].items()}
@@ -89,7 +85,7 @@ def main(args):
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="Generate protein embeddings using a pre-trained BERT model.")
+    parser = argparse.ArgumentParser(description="Generate protein embeddings using  esm2_t30_150M_UR50D model.")
     parser.add_argument("--input-path", type=str, required=True, help="Path to the input data (pickle file).")
     parser.add_argument("--output-path", type=str, required=True, help="Directory where the embeddings will be saved.")
     args = parser.parse_args()
