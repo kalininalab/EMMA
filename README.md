@@ -59,7 +59,9 @@ we demonstrate that EMMA achieves strong and robust performance, particularly on
 │ ├── EMMA_dataset.png
 │ └── README.md
 
-Please download raw_data and processed_data folders from here ((https://zenodo.org/records/17280853) and place them in the correct directory as in the Folder structure
+
+Please download raw_data and processed_data folders from [here](https://zenodo.org/records/17280853) 
+and place them in the correct directory as shown in the folder structure above.
 ```
 
 ### Setting up `EMMA` Environment:
