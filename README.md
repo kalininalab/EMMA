@@ -58,11 +58,11 @@ we demonstrate that EMMA achieves strong and robust performance, particularly on
 │ ├── EMMA.png
 │ ├── EMMA_dataset.png
 │ └── README.md
-
-
-Please download raw_data and processed_data folders from [here](https://zenodo.org/records/17280853) 
-and place them in the correct directory as shown in the folder structure above.
 ```
+
+Please download raw_data and processed_data folders from [Zenodo repository](https://zenodo.org/records/17280853)
+and place them in the correct directory as shown in the folder structure above.
+
 
 ### Setting up `EMMA` Environment:
       conda create --name EMMA python=3.12.0
