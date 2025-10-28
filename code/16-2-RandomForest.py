@@ -49,13 +49,11 @@ def rf_split(split, seed, n_jobs=None):
     print("Training RF on interaction data")
     inter_rf = RandomForestClassifier(n_estimators=100, random_state=seed, n_jobs=n_jobs)
     inter_rf.fit(train_inter_X, train_inter_y)
-    # inter_pred = inter_rf.predict(test_inter_X)
     inter_pred = inter_rf.predict_proba(test_inter_X)[:, 1]
 
     print("\nTraining RF on subclass data")
     sub_rf = RandomForestClassifier(n_estimators=100, random_state=seed, n_jobs=n_jobs)
     sub_rf.fit(train_sub_X, train_sub_y)
-    # sub_pred = sub_rf.predict(test_sub_X)
     sub_pred = sub_rf.predict_proba(test_sub_X)[:, 1]
     results_path=join(current_dir,"..","data", "training_test_results","Random_Forest")
     os.makedirs(results_path, exist_ok=True)
@@ -71,4 +69,3 @@ if __name__ == "__main__":
             print(f"=== Split: {split}, Seed: {seed} ===")
             rf_split(split, seed, n_jobs=int(sys.argv[1]) if len(sys.argv) > 1 else None)
             print()
-
