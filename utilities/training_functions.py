@@ -174,23 +174,9 @@ def calculate_all_metrics(interaction_preds, subclass_preds,
         'confusion_matrix': subclass_cm
     }
 
-    # 3. Calculate combined overall metrics by element-wise sum
-    overall_cm = interaction_cm + subclass_cm
-
-    # Calculate combined accuracy
-    combined_accuracy = np.trace(overall_cm) / np.sum(overall_cm)
-
-    combined_metrics = {
-        'confusion_matrix': overall_cm,
-        'accuracy': combined_accuracy,
-        'roc_auc': (interaction_metrics['roc_auc'] + subclass_metrics['roc_auc']) / 2,
-        'f1': (interaction_metrics['f1'] + subclass_metrics['f1']) / 2
-    }
-
     return {
         'interaction': interaction_metrics,
         'subclass': subclass_metrics,
-        'overall': combined_metrics
     }
 
 

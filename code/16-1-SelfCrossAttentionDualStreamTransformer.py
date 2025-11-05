@@ -354,7 +354,7 @@ def main(args):
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description='MTL Interaction Model')
+    parser = argparse.ArgumentParser(description='MTL transformer-based Model')
     parser.add_argument('--used_split_tech', type=str, required=True)
     parser.add_argument('--molecule_column_name', type=str, required=True)
     parser.add_argument('--protein_column_name', type=str, required=True)
