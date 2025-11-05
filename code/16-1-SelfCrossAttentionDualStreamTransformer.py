@@ -335,14 +335,14 @@ def main(args):
     logging.info("\n=== Final Test Results ===")
     logging.info(f"Test Loss: {test_loss:.4f}")
 
-    # Interaction head
+    # Interaction head:
     logging.info("\nInteraction Head Metrics:")
     logging.info(f"Accuracy: {test_metrics['interaction']['accuracy']:.4f}")
     logging.info(f"ROC-AUC: {test_metrics['interaction']['roc_auc']:.4f}")
     logging.info(f"F1: {test_metrics['interaction']['f1']:.4f}")
     logging.info(f"Confusion Matrix:\n{test_metrics['interaction']['confusion_matrix']}")
 
-    # Subclass head
+    # Subclass head:
     logging.info("\nSubclass Head Metrics:")
     logging.info(f"Accuracy: {test_metrics['subclass']['accuracy']:.4f}")
     logging.info(f"ROC-AUC: {test_metrics['subclass']['roc_auc']:.4f}")
